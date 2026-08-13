@@ -88,6 +88,9 @@
   .field{display:flex;flex-direction:column;gap:4px;}
   .field.full{grid-column:1/-1;}
   .field label{font-size:12px;color:var(--muted);font-weight:600;}
+  .field input,.field select{font-size:14px;padding:9px 10px;border:1px solid #d9dee5;border-radius:9px;background:#fafbfc;color:#1d2330;outline:none;width:100%;box-sizing:border-box;}
+  .field input:focus,.field select:focus{border-color:var(--primary);background:#fff;}
+  .modal h3{margin:0 0 4px;font-size:17px;color:#1d2330;}
   input,select{
     min-height:44px;padding:0 11px;border:1px solid var(--line);border-radius:9px;
     font-size:16px;background:#fff;color:var(--txt);width:100%;font-family:inherit;
@@ -184,6 +187,14 @@
       <button class="btn ghost" id="btnBackup" title="设置后数据自动写入本地文件（需 Chrome / Edge）">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>
         <span id="btnBackupLabel">自动备份</span>
+      </button>
+      <button class="btn primary" id="btnAdd">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        添加股票
+      </button>
+      <button class="btn ghost" id="btnSettings" title="设置 GitHub 令牌，让新股票自动同步到每日更新">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        设置
       </button>
     </div>
   </header>
@@ -376,6 +387,58 @@
 
 <input type="file" id="fileInput" accept="application/json" style="display:none">
 <div class="toast" id="toast"></div>
+
+<!-- 添加股票 -->
+<div class="modal-mask" id="addStockMask">
+  <div class="modal">
+    <h3>添加股票</h3>
+    <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">填入「代码 + 名称」即可加入本地列表；已设置 GitHub 令牌时，会自动同步到每日自动更新。</p>
+    <form id="addStockForm" class="form-grid" onsubmit="return false;">
+      <div class="field"><label>代码 *（6 位数字）</label><input id="asCode" inputmode="numeric" maxlength="6" placeholder="如 601398" autocomplete="off"></div>
+      <div class="field"><label>名称 *</label><input id="asName" placeholder="如 工商银行" autocomplete="off"></div>
+      <div class="field"><label>参考股价</label><input id="asPrice" inputmode="decimal" placeholder="如 7.52"></div>
+      <div class="field"><label>每股分红</label><input id="asDiv" inputmode="decimal" placeholder="如 0.30"></div>
+      <div class="field"><label>流通市值</label><input id="asCap" placeholder="如 3061亿" autocomplete="off"></div>
+      <div class="field"><label>连续分红年数</label><input id="asYears" inputmode="numeric" placeholder="如 25"></div>
+      <div class="field full"><label>企业性质</label>
+        <select id="asNature">
+          <option value="">不限</option>
+          <option>国有大型</option>
+          <option>股份制</option>
+          <option>城市商业</option>
+          <option>农村商业</option>
+          <option>民营</option>
+          <option>外资</option>
+          <option>其他</option>
+        </select>
+      </div>
+    </form>
+    <div class="acts" style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn" id="addStockCancel">取消</button>
+      <button class="btn primary" id="addStockSave">加入</button>
+    </div>
+  </div>
+</div>
+
+<!-- 设置：GitHub 令牌 -->
+<div class="modal-mask" id="settingsMask">
+  <div class="modal">
+    <h3>设置 · GitHub 令牌</h3>
+    <div class="field full" style="margin-bottom:6px;">
+      <label>GitHub 个人访问令牌（PAT）</label>
+      <input id="setToken" type="password" placeholder="github_pat_xxx" autocomplete="off">
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0;line-height:1.6;">
+        用于把新股票写入仓库的 <b>fundamentals.json</b>，使其在 GitHub Actions 中自动拉取股价。<br>
+        创建方式：GitHub → Settings → Developer settings → Fine-grained tokens，仅授权本仓库 <b>Contents: Read and write</b>。<br>
+        令牌只保存在本浏览器，不会上传到任何地方。
+      </p>
+    </div>
+    <div class="acts" style="display:flex;gap:10px;margin-top:14px;">
+      <button class="btn" id="settingsClear">清除令牌</button>
+      <button class="btn primary" id="settingsSave">保存</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -1837,6 +1900,93 @@
   function confirmDialog(text,cb){$("confirmText").textContent=text;confirmCb=cb;$("confirmMask").classList.add("show");}
   $("confirmNo").onclick=function(){$("confirmMask").classList.remove("show");confirmCb=null;};
   $("confirmYes").onclick=function(){var cb=confirmCb;$("confirmMask").classList.remove("show");confirmCb=null;if(cb)cb();};
+
+  // ---------- 添加股票 + 设置 ----------
+  var GH_TOKEN_KEY=K+"ghtoken";
+  function getToken(){try{return localStorage.getItem(GH_TOKEN_KEY)||"";}catch(e){return "";}}
+  function b64enc(str){return btoa(unescape(encodeURIComponent(str)));}
+  function b64dec(b64){return decodeURIComponent(escape(atob(b64)));}
+
+  function openAddStock(){
+    var f=document.getElementById("addStockForm");if(f)f.reset();
+    $("addStockMask").classList.add("show");
+    setTimeout(function(){var c=document.getElementById("asCode");if(c)c.focus();},60);
+  }
+  function closeAddStock(){$("addStockMask").classList.remove("show");}
+
+  function submitAddStock(){
+    var code=(document.getElementById("asCode").value||"").trim();
+    var name=(document.getElementById("asName").value||"").trim();
+    if(!/^\d{6}$/.test(code)){toast("代码必须是 6 位数字");return;}
+    if(!name){toast("请填写名称");return;}
+    if(stockByCode(code)){toast("该代码已存在");return;}
+    var price=parseFloat(document.getElementById("asPrice").value)||0;
+    var div=parseFloat(document.getElementById("asDiv").value)||0;
+    var cap=(document.getElementById("asCap").value||"").trim();
+    var nature=document.getElementById("asNature").value||"";
+    var yv=parseInt(document.getElementById("asYears").value,10);
+    var years=isNaN(yv)?null:yv;
+    var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
+           est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
+    stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
+    toast("已加入本地："+name);
+    pushFundamental(s).then(function(ok){
+      if(ok)toast("已同步到每日自动更新列表 ✅");
+      else toast("已加入本地；点「设置」填令牌可自动同步");
+    }).catch(function(){
+      toast("本地已加入；自动同步失败（可让助手代同步）");
+    });
+  }
+
+  // 把新股票写入仓库的 fundamentals.json（需 GitHub 令牌），之后 Actions 自动拉价
+  function pushFundamental(stock){
+    var token=getToken();
+    if(!token)return Promise.resolve(false);
+    var api="https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/fundamentals.json";
+    var hd={"Authorization":"Bearer "+token,"Accept":"application/vnd.github+json","Content-Type":"application/json","User-Agent":"bankstock-workbench"};
+    return fetch(api,{headers:hd}).then(function(r){
+      if(!r.ok)throw new Error("读取失败("+r.status+")");return r.json();
+    }).then(function(d){
+      var arr=JSON.parse(b64dec(d.content));
+      var idx=-1;for(var i=0;i<arr.length;i++){if(arr[i].code===stock.code){idx=i;break;}}
+      var entry={code:stock.code,name:stock.name,price:stock.price||0,cap:stock.cap||"",div:stock.div||0,ttm:null,nature:stock.nature||"",years:stock.years||null};
+      if(idx>=0)arr[idx]=entry;else arr.push(entry);
+      return fetch(api,{method:"PUT",headers:hd,body:JSON.stringify({
+        message:"feat: 新增股票 "+stock.code+" "+stock.name,
+        content:b64enc(JSON.stringify(arr,null,2)),
+        sha:d.sha
+      })});
+    }).then(function(r){
+      if(!r.ok)throw new Error("写入失败("+r.status+")");return true;
+    });
+  }
+
+  function openSettings(){
+    var t=document.getElementById("setToken");if(t)t.value=getToken();
+    $("settingsMask").classList.add("show");
+  }
+  function saveSettings(){
+    var v=(document.getElementById("setToken").value||"").trim();
+    try{localStorage.setItem(GH_TOKEN_KEY,v);}catch(e){}
+    toast(v?"已保存 GitHub 令牌":"已清空令牌");
+    $("settingsMask").classList.remove("show");
+  }
+  function clearSettings(){
+    try{localStorage.removeItem(GH_TOKEN_KEY);}catch(e){}
+    var t=document.getElementById("setToken");if(t)t.value="";
+    toast("已清除令牌");$("settingsMask").classList.remove("show");
+  }
+
+  $("btnAdd").onclick=openAddStock;
+  $("btnSettings").onclick=openSettings;
+  $("addStockSave").onclick=submitAddStock;
+  $("addStockCancel").onclick=closeAddStock;
+  $("settingsSave").onclick=saveSettings;
+  $("settingsClear").onclick=clearSettings;
+  ["addStockMask","settingsMask"].forEach(function(id){
+    var m=$(id);if(!m)return;
+    m.addEventListener("click",function(e){if(e.target===m)m.classList.remove("show");});
+  });
 
   // ---------- Tab ----------
   function switchTab(name){
