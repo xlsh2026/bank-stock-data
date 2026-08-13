@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-13T08:04:46.080Z",
+  "updated": "2026-08-13T08:15:44.960Z",
   "source": "腾讯实时行情(自动每15分钟)",
   "prices": [
     {
@@ -304,55 +304,55 @@
       "name": "国电电力",
       "price": 5.07,
       "cap": "",
-      "div": 0,
-      "ttm": null,
-      "nature": "",
-      "years": null,
-      "est": 0
+      "div": 0.241,
+      "ttm": 4.75,
+      "nature": "电力",
+      "years": 27,
+      "est": 4.75
     },
     {
       "code": "600377",
       "name": "宁沪高速",
       "price": 12.01,
       "cap": "",
-      "div": 0,
-      "ttm": null,
-      "nature": "",
-      "years": null,
-      "est": 0
+      "div": 0.49,
+      "ttm": 4.08,
+      "nature": "高速",
+      "years": 25,
+      "est": 4.08
     },
     {
       "code": "600028",
       "name": "中国石化",
       "price": 4.99,
       "cap": "",
-      "div": 0,
-      "ttm": null,
-      "nature": "",
-      "years": null,
-      "est": 0
+      "div": 0.2,
+      "ttm": 4.01,
+      "nature": "石化",
+      "years": 24,
+      "est": 4.01
     },
     {
       "code": "600025",
       "name": "华能水电",
       "price": 9.71,
       "cap": "",
-      "div": 0,
-      "ttm": null,
-      "nature": "",
-      "years": null,
-      "est": 0
+      "div": 0.2,
+      "ttm": 2.11,
+      "nature": "水电",
+      "years": 8,
+      "est": 2.06
     },
     {
       "code": "000429",
       "name": "粤高速A",
       "price": 13.23,
       "cap": "",
-      "div": 0,
-      "ttm": null,
-      "nature": "",
-      "years": null,
-      "est": 0
+      "div": 0.52,
+      "ttm": 4.57,
+      "nature": "高速",
+      "years": 28,
+      "est": 3.93
     },
     {
       "code": "600926",
