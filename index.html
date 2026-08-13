@@ -46,6 +46,7 @@
   .btn.primary:active{background:var(--primary-d);}
   .btn.ghost{background:rgba(255,255,255,.16);color:#fff;}
   .btn.ghost:active{background:rgba(255,255,255,.28);}
+  .btn.ghost.on{background:#1f9d55;color:#fff;border-color:#1f9d55;}
   .btn.danger{background:rgba(230,57,70,.16);color:#fff;}
   .btn.sm{min-height:34px;padding:0 10px;font-size:13px;border-radius:8px;}
   .btn.block{width:100%;}
@@ -170,7 +171,7 @@
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/></svg>
       攒股收息台
     </h1>
-    <div class="sub">筛选 · 持仓收息 · 股息日历 — 数据本地保存，可导出备份</div>
+    <div class="sub">筛选 · 持仓收息 · 股息日历 — 数据本地保存，支持自动备份</div>
     <div class="toolbar">
       <button class="btn ghost" id="btnExport">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -180,12 +181,16 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 9l5-5 5 5M12 4v12"/></svg>
         导入恢复
       </button>
+      <button class="btn ghost" id="btnBackup" title="设置后数据自动写入本地文件（需 Chrome / Edge）">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2zM17 21v-8H7v8M7 3v5h8"/></svg>
+        <span id="btnBackupLabel">自动备份</span>
+      </button>
     </div>
   </header>
 
   <div class="hint" id="hint30" style="display:none;">
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#8a6100" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>
-    <span>数据已积累 30 条，建议点「导出JSON」备份，避免意外丢失。</span>
+    <span>数据已积累 30 条，建议开启「自动备份」或点「导出JSON」备份，避免意外丢失。</span>
   </div>
 
   <section class="today">
@@ -1488,7 +1493,7 @@
 
   // ---------- 存储 ----------
   function load(key,def){try{var v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch(e){return def;}}
-  function save(key,val){localStorage.setItem(key,JSON.stringify(val));}
+  function save(key,val){localStorage.setItem(key,JSON.stringify(val));if(typeof scheduleBackup==="function")scheduleBackup();}
 
   var stocks=load(KEYS.stocks,null);
   var holdings=load(KEYS.holdings,null);
@@ -1782,6 +1787,32 @@
     a.download="攒股收息台-备份-"+new Date().toISOString().slice(0,10)+".json";a.click();
     toast("已导出 JSON");
   };
+
+  // ---------- 自动备份（File System Access） ----------
+  var FS_SUPPORT=("showSaveFilePicker" in window);
+  var _backupHandle=null,_backupTimer=null;
+  function _idxOpen(){return new Promise(function(res,rej){var r=indexedDB.open("wb_bankstock_bk",1);r.onupgradeneeded=function(){r.result.createObjectStore("handles");};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+  function _idxPut(k,v){return _idxOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction("handles","readwrite");tx.objectStore("handles").put(v,k);tx.oncomplete=function(){res();};tx.onerror=function(){rej(tx.error);};});});}
+  function _idxGet(k){return _idxOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction("handles","readonly");var rq=tx.objectStore("handles").get(k);rq.onsuccess=function(){res(rq.result);};rq.onerror=function(){rej(rq.error);};});});}
+  function setBackupBtn(on){var b=$("btnBackup");if(!b)return;var lab=$("btnBackupLabel");if(on){b.classList.add("on");if(lab)lab.textContent="自动备份✓";}else{b.classList.remove("on");if(lab)lab.textContent="自动备份";}}
+  function scheduleBackup(){if(!_backupHandle)return;if(_backupTimer)clearTimeout(_backupTimer);_backupTimer=setTimeout(writeAutoBackup,800);}
+  function writeAutoBackup(){
+    if(!_backupHandle)return;
+    var data={_type:"bankstock_workspace",_v:1,exported:new Date().toISOString(),stocks:stocks,holdings:holdings,calendar:calendar};
+    _backupHandle.createWritable().then(function(w){return w.write(JSON.stringify(data,null,2)).then(function(){return w.close();});})
+      .catch(function(err){console.warn("自动备份写入失败",err);_backupHandle=null;setBackupBtn(false);_idxPut("auto",null).catch(function(){});toast("自动备份已停止（文件权限失效），可重新设置");});
+  }
+  function setupAutoBackup(){
+    if(!FS_SUPPORT){toast("当前浏览器不支持自动写文件，请用 Chrome / Edge");return;}
+    window.showSaveFilePicker({suggestedName:"攒股收息台-自动备份.json",types:[{description:"JSON",accept:{"application/json":[".json"]}}]})
+      .then(function(handle){_backupHandle=handle;return _idxPut("auto",handle);})
+      .then(function(){setBackupBtn(true);return writeAutoBackup();})
+      .then(function(){toast("已开启自动备份，数据将自动写入该文件");})
+      .catch(function(err){if(err&&err.name==="AbortError")return;console.warn(err);toast("设置自动备份失败");});
+  }
+  if(FS_SUPPORT){_idxGet("auto").then(function(h){if(h){_backupHandle=h;setBackupBtn(true);}}).catch(function(){});}
+  $("btnBackup").onclick=setupAutoBackup;
+
   $("btnImport").onclick=function(){$("fileInput").click();};
   $("fileInput").onchange=function(e){
     var f=e.target.files[0];if(!f)return;
