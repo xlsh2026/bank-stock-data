@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-13T07:35:08.341Z",
+  "updated": "2026-08-13T07:36:16.378Z",
   "source": "腾讯实时行情(自动每15分钟)",
   "prices": [
     {
@@ -512,6 +512,17 @@
       "code": "600025",
       "name": "华能水电",
       "price": 9.71,
+      "cap": "",
+      "div": 0,
+      "ttm": null,
+      "nature": "",
+      "years": null,
+      "est": 0
+    },
+    {
+      "code": "000429",
+      "name": "粤高速A",
+      "price": 13.23,
       "cap": "",
       "div": 0,
       "ttm": null,
