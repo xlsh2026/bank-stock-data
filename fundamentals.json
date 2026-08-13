@@ -448,5 +448,15 @@
     "ttm": null,
     "nature": "",
     "years": null
+  },
+  {
+    "code": "600028",
+    "name": "中国石化",
+    "price": 0,
+    "cap": "",
+    "div": 0,
+    "ttm": null,
+    "nature": "",
+    "years": null
   }
 ]
