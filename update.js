@@ -4,50 +4,27 @@
 
 const https = require('https');
 const fs = require('fs');
+const { fetchAllPrices } = require('./price_source');
 
 const FUND = JSON.parse(fs.readFileSync('fundamentals.json', 'utf8'));
 let prev = [];
-try { prev = JSON.parse(fs.readFileSync('prices.json', 'utf8')).prices || []; } catch (e) {}
+let prevUpdated = null;
+try {
+  const prevObj = JSON.parse(fs.readFileSync('prices.json', 'utf8'));
+  prev = prevObj.prices || [];
+  prevUpdated = prevObj.updated;
+} catch (e) {}
 const prevMap = {};
 prev.forEach(p => { prevMap[p.code] = p; });
 
-function get(url) {
-  return new Promise((resolve, reject) => {
-    const req = https.get(url, { timeout: 15000 }, r => {
-      if (r.statusCode !== 200) return reject(new Error('HTTP ' + r.statusCode));
-      let d = '';
-      r.on('data', c => (d += c));
-      r.on('end', () => resolve(d));
-    });
-    req.on('timeout', () => req.destroy(new Error('timeout')));
-    req.on('error', reject);
-  });
-}
-
-// 解析腾讯行情接口：v_sh601398="1~工商银行~601398~7.52~..."  第3字段(下标3)为现价
-function parseTencent(txt) {
-  const out = {};
-  txt.split(';').forEach(line => {
-    const m = line.match(/v_(sh|sz)(\d+)="([^"]*)"/);
-    if (!m) return;
-    const f = m[3].split('~');
-    const price = parseFloat(f[3]);
-    if (!isNaN(price) && price > 0) out[m[2]] = price;
-  });
-  return out;
-}
-
 (async () => {
-  const codes = FUND.map(s => (/^6/.test(s.code) ? 'sh' + s.code : 'sz' + s.code));
-  const url = 'https://qt.gtimg.cn/q=' + codes.join(',');
-  let live = {};
-  try {
-    const txt = await get(url);
-    live = parseTencent(txt);
-    console.log('行情拉取成功 ' + Object.keys(live).length + ' 条');
-  } catch (e) {
-    console.log('行情拉取失败，使用兜底价: ' + e.message);
-  }
+  const codes = FUND.map(s => s.code);
+  const { prices: live, fresh } = await fetchAllPrices(codes);
+  console.log('行情拉取成功 ' + Object.keys(live).length + '/' + codes.length + ' 条, fresh=' + fresh);
+
+  // 关键修复：拉取彻底失败时不刷新时间戳，避免掩盖陈旧数据
+  const updated = fresh ? new Date().toISOString() : (prevUpdated || new Date().toISOString());
+
   const prices = FUND.map(s => {
     const p = (live[s.code] != null) ? live[s.code] : (prevMap[s.code] ? prevMap[s.code].price : s.price);
     const cap = prevMap[s.code] ? (prevMap[s.code].cap || '') : (s.cap || '');
@@ -58,10 +35,10 @@ function parseTencent(txt) {
     };
   });
   const out = {
-    updated: new Date().toISOString(),
-    source: '腾讯实时行情(自动每15分钟)',
+    updated: updated,
+    source: '腾讯+东方财富双源实时行情',
     prices: prices
   };
   fs.writeFileSync('prices.json', JSON.stringify(out, null, 2));
-  console.log('已写出 prices.json 时间戳 ' + out.updated);
+  console.log('已写出 prices.json 时间戳 ' + out.updated + (fresh ? '' : ' [注意: 本次拉取失败, 沿用旧时间戳]'));
 })();
