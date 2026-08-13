@@ -1891,9 +1891,10 @@
     } else {setAutoStatus("底表已是最新",true);}
   }
   function autoSync(){
-    fetchJson(CDN_URL)
+    // 优先用 raw（推送即生效、无 CDN 缓存），jsDelivr 仅作被墙时的兜底
+    fetchJson(DATA_URL)
       .then(applyAuto)
-      .catch(function(){fetchJson(DATA_URL)
+      .catch(function(){fetchJson(CDN_URL)
         .then(applyAuto)
         .catch(function(){fetchJson(FALLBACK_URL)
           .then(applyAuto)
