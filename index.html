@@ -393,7 +393,7 @@
 <div class="modal-mask" id="addStockMask">
   <div class="modal">
     <h3>添加股票</h3>
-    <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">填入「代码 + 名称」即可加入本地列表；已设置 GitHub 令牌时，会自动同步到每日自动更新。</p>
+    <p style="font-size:12px;color:var(--muted);margin:0 0 12px;">填「代码 + 名称」即可加入；提交后会自动从行情拉取股价、市值。分红数据将在自动更新后自动补全，无需手填。</p>
     <form id="addStockForm" class="form-grid" onsubmit="return false;">
       <div class="field"><label>代码 *（6 位数字）</label><input id="asCode" inputmode="numeric" maxlength="6" placeholder="如 601398" autocomplete="off"></div>
       <div class="field"><label>名称 *</label><input id="asName" placeholder="如 工商银行" autocomplete="off"></div>
@@ -1739,6 +1739,22 @@
   }
   function closeAddStock(){$("addStockMask").classList.remove("show");}
 
+  // 浏览器端从东方财富 push2 拉取现价/市值/名称（该接口允许跨域）
+  function secidOf(code){
+    var c=code.replace(/^(sh|sz)/,'');
+    return (/^[69]/.test(c)?'1.':'0.')+c;
+  }
+  function fetchQuoteBrowser(code){
+    var sid=secidOf(code);
+    var url='https://push2.eastmoney.com/api/qt/stock/get?secid='+sid+'&fields=f43,f57,f58,f116&invt=2&fltt=2';
+    return fetch(url,{headers:{'User-Agent':'Mozilla/5.0'}}).then(function(r){return r.json();}).then(function(j){
+      var d=j.data||{};
+      var price=parseFloat(d.f43)||0;
+      var cap=d.f116?Math.round(d.f116/1e8)+'亿':'';
+      return {price:price, cap:cap, name:d.f58||''};
+    });
+  }
+
   function submitAddStock(){
     var code=(document.getElementById("asCode").value||"").trim();
     var name=(document.getElementById("asName").value||"").trim();
@@ -1751,15 +1767,30 @@
     var nature=document.getElementById("asNature").value||"";
     var yv=parseInt(document.getElementById("asYears").value,10);
     var years=isNaN(yv)?null:yv;
-    var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
-           est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
-    stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
-    toast("已加入本地："+name);
-    pushFundamental(s).then(function(ok){
-      if(ok)toast("已同步到每日自动更新列表 ✅");
-      else toast("已加入本地；点「设置」填令牌可自动同步");
+    toast("正在从行情拉取股价/市值…");
+    fetchQuoteBrowser(code).then(function(q){
+      if(q){
+        if(!name && q.name) name=q.name;
+        if(!price && q.price>0) price=q.price;
+        if(!cap && q.cap) cap=q.cap;
+      }
+      var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
+             est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
+      stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
+      toast("已加入本地："+name+(price?"（现价 "+price+"）":""));
+      pushFundamental(s).then(function(ok){
+        if(ok)toast("已同步到自动更新；分红将自动补全 ✅");
+        else toast("已加入本地；点「设置」填令牌可自动同步");
+      }).catch(function(){
+        toast("本地已加入；自动同步失败（可让助手代同步）");
+      });
     }).catch(function(){
-      toast("本地已加入；自动同步失败（可让助手代同步）");
+      // 行情拉取失败也不阻断：用用户手填值
+      var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
+             est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
+      stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
+      toast("已加入本地："+name);
+      pushFundamental(s);
     });
   }
 
