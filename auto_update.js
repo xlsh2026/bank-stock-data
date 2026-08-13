@@ -9,8 +9,8 @@
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const { execSync } = require('child_process');
+const { fetchAllPrices } = require('./price_source');
 
 // ---- 读取令牌（仅本地，不会上传到 GitHub）----
 let TOKEN;
@@ -45,28 +45,6 @@ function inTrading() {
   const morning = mins >= 540 && mins <= 690;  // 09:00-11:30
   const afternoon = mins >= 780 && mins <= 900; // 13:00-15:00
   return morning || afternoon;
-}
-
-function getText(url) {
-  return new Promise((resolve, reject) => {
-    const req = https.get(url, { timeout: 15000 }, r => {
-      if (r.statusCode !== 200) return reject(new Error('HTTP ' + r.statusCode));
-      let d = ''; r.on('data', c => (d += c)); r.on('end', () => resolve(d));
-    });
-    req.on('timeout', () => req.destroy(new Error('timeout')));
-    req.on('error', reject);
-  });
-}
-function parseTencent(txt) {
-  const out = {};
-  txt.split(';').forEach(line => {
-    const m = line.match(/v_(sh|sz)(\d+)="([^"]*)"/);
-    if (!m) return;
-    const f = m[3].split('~');
-    const price = parseFloat(f[3]);
-    if (!isNaN(price) && price > 0) out[m[2]] = price;
-  });
-  return out;
 }
 
 // 推送 fundamentals.json（补全分红后调用）
@@ -119,24 +97,21 @@ async function pushFundamentals() {
   }
   console.log((FORCE ? 'FORCE ' : '远端过期（' + Math.round(age / 60000) + ' 分钟前），') + '重新拉取并推送');
 
-  // 3) 拉取最新价
+  // 3) 拉取最新价（腾讯+东方财富双源，任一失败自动补另一源）
   const FUND = JSON.parse(fs.readFileSync(path.join(__dirname, 'fundamentals.json'), 'utf8'));
-  const codes = FUND.map(s => (/^6/.test(s.code) ? 'sh' + s.code : 'sz' + s.code));
-  let live = {};
-  try {
-    const txt = await getText('https://qt.gtimg.cn/q=' + codes.join(','));
-    live = parseTencent(txt);
-    console.log('行情拉取成功 ' + Object.keys(live).length + ' 条');
-  } catch (e) {
-    console.log('行情拉取失败，保留原数据: ' + e.message);
+  const codes = FUND.map(s => s.code);
+  const { prices: live, fresh } = await fetchAllPrices(codes);
+  if (!fresh) {
+    console.log('行情拉取失败，保留原数据（不推送）');
     return;
   }
+  console.log('行情拉取成功 ' + Object.keys(live).length + '/' + codes.length + ' 条');
   const prices = FUND.map(s => {
     const p = (live[s.code] != null) ? live[s.code] : s.price;
     const est = p > 0 ? +(s.div / p * 100).toFixed(2) : s.ttm;
     return { code: s.code, name: s.name, price: p, cap: s.cap || '', div: s.div, ttm: s.ttm, nature: s.nature, years: s.years, est: est };
   });
-  const out = { updated: new Date().toISOString(), source: '腾讯实时行情(兜底自动更新)', prices };
+  const out = { updated: new Date().toISOString(), source: '腾讯+东方财富双源实时行情(兜底自动更新)', prices };
   const b64 = Buffer.from(JSON.stringify(out, null, 2)).toString('base64');
 
   // 4) 推送
