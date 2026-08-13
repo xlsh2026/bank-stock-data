@@ -397,6 +397,17 @@
       "nature": "股份制",
       "years": 4,
       "est": 4.47
+    },
+    {
+      "code": "000651",
+      "name": "格力电器",
+      "price": 0,
+      "cap": "",
+      "div": 0,
+      "ttm": null,
+      "nature": "",
+      "years": null,
+      "est": null
     }
   ]
 }
