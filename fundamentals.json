@@ -458,5 +458,15 @@
     "ttm": null,
     "nature": "",
     "years": null
+  },
+  {
+    "code": "600025",
+    "name": "华能水电",
+    "price": 0,
+    "cap": "",
+    "div": 0,
+    "ttm": null,
+    "nature": "",
+    "years": null
   }
 ]
