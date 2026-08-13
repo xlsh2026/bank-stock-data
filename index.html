@@ -180,14 +180,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 9l5-5 5 5M12 4v12"/></svg>
         导入恢复
       </button>
-      <button class="btn ghost" id="btnCsv">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg>
-        导出CSV
-      </button>
-      <button class="btn danger" id="btnClear">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-        清空示例数据
-      </button>
     </div>
   </header>
 
@@ -1807,21 +1799,6 @@
       $("fileInput").value="";
     };
     r.readAsText(f);
-  };
-  $("btnCsv").onclick=function(){
-    var rows=[["代码","名称","股价","每股分红","流通市值","企业性质","连续分红年数","股息支付率","股息复合年增","滚动股息率","推算股息率"]];
-    stocks.forEach(function(s){rows.push([s.code,s.name,s.price,s.div,s.cap||"",s.nature,s.years||"",s.payout||"",s.growth||"",s.ttm||"",s.est||""]);});
-    var csv="\uFEFF"+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
-    var blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
-    var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="银行股筛选库.csv";a.click();
-    toast("已导出 CSV");
-  };
-  $("btnClear").onclick=function(){
-    confirmDialog("确定清空全部示例/本地数据吗？建议先「导出JSON」备份。此操作不可恢复。",function(){
-      localStorage.removeItem(KEYS.stocks);localStorage.removeItem(KEYS.holdings);
-      localStorage.removeItem(KEYS.calendar);localStorage.removeItem(KEYS.seeded);
-      stocks=[];holdings=[];calendar=[];renderAll();toast("已清空，可重新录入或导入");
-    });
   };
 
   // ---------- 二次确认 ----------
