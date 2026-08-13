@@ -468,5 +468,15 @@
     "ttm": null,
     "nature": "",
     "years": null
+  },
+  {
+    "code": "000429",
+    "name": "粤高速A",
+    "price": 0,
+    "cap": "",
+    "div": 0,
+    "ttm": null,
+    "nature": "",
+    "years": null
   }
 ]
