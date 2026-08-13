@@ -114,9 +114,8 @@
   .toolbar select{min-height:42px;padding:8px 12px;border:1px solid #cdd8dc;border-radius:10px;background:#fff;font-size:14px;color:#1f2937;cursor:pointer;}
   .btn-ghost{background:#eef6f4;color:#0f766e;border:1px solid #cfe9e3;}
   .btn-ghost:hover{background:#e0f0ec;}
-  .upd-time{margin-left:auto;font-size:12px;color:var(--muted);align-self:center;white-space:nowrap;}
   .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  /* 银行股筛选库：表头固定，表身垂直滚动 */
+  /* 筛选库：表头固定，表身垂直滚动 */
   #sec-lib .tbl-scroll{max-height:60vh;min-height:220px;overflow-y:auto;border-radius:10px;border:1px solid var(--line);}
   #sec-lib thead th{background:#fafcfb;position:sticky;top:0;z-index:2;}
   .row-actions{display:flex;gap:6px;}
@@ -235,7 +234,7 @@
     <div class="card">
       <h3>
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-        银行股筛选库（<span id="libCount">0</span>）
+        筛选库（<span id="libCount">0</span>）
       </h3>
       <div class="toolbar">
         <span class="toolbar-label">排序</span>
@@ -253,7 +252,6 @@
           <button type="button" class="seg" data-val="e5" onclick="setFilter('e5')">&lt;5%</button>
         </div>
         <button type="button" class="btn btn-ghost" id="btnSnap" onclick="loadSnapshot()">📥 载入最新底表</button>
-        <span id="lastUpd" class="upd-time">尚未更新股价</span>
       </div>
       <div class="tbl-scroll">
         <table>
@@ -447,7 +445,7 @@
 (function(){
   "use strict";
   var K="wb_bankstock_";
-  var KEYS={stocks:K+"stocks",holdings:K+"holdings",calendar:K+"calendar",seeded:K+"seeded",lastUpdate:K+"lastUpdate",chart:K+"chart"};
+  var KEYS={stocks:K+"stocks",holdings:K+"holdings",calendar:K+"calendar",seeded:K+"seeded",chart:K+"chart"};
 
   // ---------- 示例数据（示意值，请自行替换）----------
   var SAMPLE_STOCKS=[
@@ -1625,7 +1623,7 @@
         pushHistory(t.code,t.price);
         n++;
       });
-      save(KEYS.stocks,stocks);save(KEYS.lastUpdate,Date.now());renderAll();
+      save(KEYS.stocks,stocks);renderAll();
       toast("已载入最新底表（"+n+" 只，2026-08-12 盘中）");
     }catch(e){
       toast("载入失败："+(e&&e.message?e.message:e));
@@ -2005,14 +2003,7 @@
   }
 
   // ---------- 总渲染 ----------
-  function renderUpdTime(){
-    var el=document.getElementById("lastUpd");if(!el)return;
-    var t=load(KEYS.lastUpdate,null);
-    if(!t){el.textContent="尚未更新股价";return;}
-    var d=new Date(t),p=function(n){return (n<10?"0":"")+n;};
-    el.textContent="最后更新："+p(d.getMonth()+1)+"-"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes());
-  }
-  function renderAll(){renderToday();renderLib();renderHold();renderCal();checkHint();renderUpdTime();}
+  function renderAll(){renderToday();renderLib();renderHold();renderCal();checkHint();}
   renderAll();
 
   // ---------- 全自动同步最新底表（GitHub Pages 数据源，每15分钟自动刷新）----------
@@ -2038,18 +2029,13 @@
       pushHistory(s.code,s.price);
       n++;
     });
-    if(n>0){save(KEYS.stocks,stocks);localStorage.setItem(KEYS.lastUpdate,Date.now());}
+    if(n>0){save(KEYS.stocks,stocks);}
     return n;
   }
-  function setAutoStatus(text,ok){var el=document.getElementById("lastUpd");if(!el)return;el.textContent=text;el.style.color=ok?"var(--green)":"var(--amber)";}
   function fetchJson(u){return fetch(u+"?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});}
   function applyAuto(data){
     var ts=data&&data.updated?new Date(data.updated).getTime():0;
-    if(ts>lastAutoTs){lastAutoTs=ts;var n=applyPricePatch(data.prices);renderAll();
-      var p=function(x){return (x<10?"0":"")+x;},d=new Date(ts);
-      setAutoStatus("自动同步底表 "+p(d.getMonth()+1)+"-"+p(d.getDate())+" "+p(d.getHours())+":"+p(d.getMinutes()),true);
-      if(n>0)toast("已自动同步最新底表 ("+n+" 只)");
-    } else {setAutoStatus("底表已是最新",true);}
+    if(ts>lastAutoTs){lastAutoTs=ts;var n=applyPricePatch(data.prices);renderAll();if(n>0)toast("已自动同步最新底表 ("+n+" 只)");}
   }
   function autoSync(){
     // 优先用 raw（推送即生效、无 CDN 缓存），jsDelivr 仅作被墙时的兜底
@@ -2059,7 +2045,7 @@
         .then(applyAuto)
         .catch(function(){fetchJson(FALLBACK_URL)
           .then(applyAuto)
-          .catch(function(){setAutoStatus("内置快照 · 点「载入最新底表」更新",false);});});});
+          .catch(function(){});});});
   }
   autoSync();
   setInterval(autoSync,5*60*1000);
