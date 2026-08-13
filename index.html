@@ -116,6 +116,9 @@
   .btn-ghost:hover{background:#e0f0ec;}
   .upd-time{margin-left:auto;font-size:12px;color:var(--muted);align-self:center;white-space:nowrap;}
   .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  /* 银行股筛选库：表头固定，表身垂直滚动 */
+  #sec-lib .tbl-scroll{max-height:60vh;min-height:220px;overflow-y:auto;border-radius:10px;border:1px solid var(--line);}
+  #sec-lib thead th{background:#fafcfb;position:sticky;top:0;z-index:2;}
   .row-actions{display:flex;gap:6px;}
   .icon-btn{
     width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
