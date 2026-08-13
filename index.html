@@ -115,9 +115,14 @@
   .btn-ghost{background:#eef6f4;color:#0f766e;border:1px solid #cfe9e3;}
   .btn-ghost:hover{background:#e0f0ec;}
   .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  /* 筛选库：表头固定，表身垂直滚动 */
-  #sec-lib .tbl-scroll{max-height:60vh;min-height:220px;overflow-y:auto;border-radius:10px;border:1px solid var(--line);}
+  /* 筛选库：表头固定，表身垂直滚动；首列名称/代码固定，方便手机横滑 */
+  #sec-lib .tbl-scroll{max-height:60vh;min-height:220px;overflow:auto;border-radius:10px;border:1px solid var(--line);}
+  #sec-lib table{min-width:720px;}
   #sec-lib thead th{background:#fafcfb;position:sticky;top:0;z-index:2;}
+  #sec-lib th:first-child,
+  #sec-lib td:first-child{position:sticky;left:0;z-index:3;background:var(--card);}
+  #sec-lib thead th:first-child{z-index:4;}
+  #sec-lib td:first-child{box-shadow:2px 0 4px rgba(0,0,0,.05);}
   .row-actions{display:flex;gap:6px;}
   .icon-btn{
     width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
