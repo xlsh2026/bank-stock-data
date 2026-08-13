@@ -29,10 +29,17 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "=== git status before add ==="
+          git status --short
+          echo "=== prices.json head ==="
+          head -5 prices.json
           git add prices.json
+          echo "=== git diff --cached stat ==="
+          git diff --cached --stat || true
           if git diff --cached --quiet; then
             echo "无变化，跳过提交"
           else
             git commit -m "chore: 自动更新股价 $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M')"
             git push
+            echo "已推送更新"
           fi
