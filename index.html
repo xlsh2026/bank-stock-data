@@ -448,13 +448,13 @@
   var KEYS={stocks:K+"stocks",holdings:K+"holdings",calendar:K+"calendar",seeded:K+"seeded",chart:K+"chart"};
 
   // ---------- 示例数据（示意值，请自行替换）----------
-  var SAMPLE_STOCKS=[
+    var SAMPLE_STOCKS=[
   {
     "code": "600000",
     "name": "浦发银行",
     "price": 9.18,
     "div": 0.42,
-    "cap": "3054亿",
+    "cap": "3061亿",
     "nature": "股份制",
     "years": 25,
     "payout": "",
@@ -467,13 +467,13 @@
     "name": "华夏银行",
     "price": 6.66,
     "div": 0.42,
-    "cap": "1029亿",
+    "cap": "1031亿",
     "nature": "股份制",
     "years": 25,
     "payout": "",
     "growth": "",
     "ttm": 6.28,
-    "est": 6.28
+    "est": 6.31
   },
   {
     "code": "600016",
@@ -486,189 +486,85 @@
     "payout": "",
     "growth": "",
     "ttm": 5.4,
-    "est": 5.4
+    "est": 5.45
   },
   {
     "code": "600036",
     "name": "招商银行",
     "price": 38.77,
     "div": 2.016,
-    "cap": "7973亿",
+    "cap": "8016亿",
     "nature": "股份制",
     "years": 24,
     "payout": "",
     "growth": "",
     "ttm": 5.22,
-    "est": 5.22
-  },
-  {
-    "code": "600908",
-    "name": "无锡银行",
-    "price": 5.4,
-    "div": 0.24,
-    "cap": "108亿",
-    "nature": "农商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.46,
-    "est": 4.46
+    "est": 5.2
   },
   {
     "code": "600919",
     "name": "江苏银行",
     "price": 11.69,
     "div": 0.5641,
-    "cap": "2147亿",
+    "cap": "2154亿",
     "nature": "城商行",
     "years": 10,
     "payout": "",
     "growth": "",
     "ttm": 4.82,
-    "est": 4.82
-  },
-  {
-    "code": "600926",
-    "name": "杭州银行",
-    "price": 16.18,
-    "div": 0.66,
-    "cap": "1154亿",
-    "nature": "城商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.15,
-    "est": 4.15
-  },
-  {
-    "code": "600928",
-    "name": "西安银行",
-    "price": 3.52,
-    "div": 0.1,
-    "cap": "156亿",
-    "nature": "城商行",
-    "years": 8,
-    "payout": "",
-    "growth": "",
-    "ttm": 2.84,
-    "est": 2.84
-  },
-  {
-    "code": "601009",
-    "name": "南京银行",
-    "price": 11.21,
-    "div": 0.5291,
-    "cap": "1385亿",
-    "nature": "城商行",
-    "years": 19,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.72,
-    "est": 4.72
-  },
-  {
-    "code": "601077",
-    "name": "渝农商行",
-    "price": 6.53,
-    "div": 0.3209,
-    "cap": "575亿",
-    "nature": "农商行",
-    "years": 7,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.93,
-    "est": 4.93
-  },
-  {
-    "code": "601128",
-    "name": "常熟银行",
-    "price": 6.13,
-    "div": 0.27,
-    "cap": "222亿",
-    "nature": "农商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.03,
-    "est": 4.43
+    "est": 4.83
   },
   {
     "code": "601166",
     "name": "兴业银行",
     "price": 18.17,
     "div": 1.066,
-    "cap": "3835亿",
+    "cap": "3841亿",
     "nature": "股份制",
     "years": 20,
     "payout": "",
     "growth": "",
     "ttm": 5.88,
-    "est": 5.88
+    "est": 5.87
   },
   {
     "code": "601169",
     "name": "北京银行",
     "price": 4.99,
     "div": 0.278,
-    "cap": "1059亿",
+    "cap": "1061亿",
     "nature": "城商行",
     "years": 19,
     "payout": "",
     "growth": "",
     "ttm": 5.55,
-    "est": 5.55
-  },
-  {
-    "code": "601187",
-    "name": "厦门银行",
-    "price": 7.33,
-    "div": 0.25,
-    "cap": "193亿",
-    "nature": "城商行",
-    "years": 6,
-    "payout": "",
-    "growth": "",
-    "ttm": 3.41,
-    "est": 3.41
-  },
-  {
-    "code": "601229",
-    "name": "上海银行",
-    "price": 9.31,
-    "div": 0.52,
-    "cap": "1311亿",
-    "nature": "城商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 5.63,
-    "est": 5.63
+    "est": 5.57
   },
   {
     "code": "601288",
     "name": "农业银行",
     "price": 6.56,
     "div": 0.2495,
-    "cap": "2.04万亿",
+    "cap": "2.06万亿",
     "nature": "国有行",
     "years": 16,
     "payout": "",
     "growth": "",
     "ttm": 3.9,
-    "est": 3.9
+    "est": 3.8
   },
   {
     "code": "601328",
     "name": "交通银行",
     "price": 6.93,
     "div": 0.3247,
-    "cap": "1796亿",
+    "cap": "1804亿",
     "nature": "国有行",
     "years": 18,
     "payout": "",
     "growth": "",
     "ttm": 4.71,
-    "est": 4.71
+    "est": 4.69
   },
   {
     "code": "601398",
@@ -681,33 +577,7 @@
     "payout": "",
     "growth": "",
     "ttm": 4.12,
-    "est": 4.12
-  },
-  {
-    "code": "601528",
-    "name": "瑞丰银行",
-    "price": 4.86,
-    "div": 0.21,
-    "cap": "90亿",
-    "nature": "农商行",
-    "years": 5,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.34,
-    "est": 4.34
-  },
-  {
-    "code": "601577",
-    "name": "长沙银行",
-    "price": 9.18,
-    "div": 0.43,
-    "cap": "367亿",
-    "nature": "城商行",
-    "years": 8,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.7,
-    "est": 4.7
+    "est": 4.08
   },
   {
     "code": "601658",
@@ -720,27 +590,14 @@
     "payout": "",
     "growth": "",
     "ttm": 4.42,
-    "est": 4.42
-  },
-  {
-    "code": "601665",
-    "name": "齐鲁银行",
-    "price": 6.24,
-    "div": 0.2492,
-    "cap": "384亿",
-    "nature": "城商行",
-    "years": 6,
-    "payout": "",
-    "growth": "",
-    "ttm": 3.99,
-    "est": 3.99
+    "est": 4.41
   },
   {
     "code": "601818",
     "name": "光大银行",
     "price": 3.02,
     "div": 0.175,
-    "cap": "1401亿",
+    "cap": "1406亿",
     "nature": "股份制",
     "years": 16,
     "payout": "",
@@ -749,82 +606,17 @@
     "est": 5.79
   },
   {
-    "code": "601825",
-    "name": "沪农商行",
-    "price": 8.23,
-    "div": 0.435,
-    "cap": "772亿",
-    "nature": "农商行",
-    "years": 5,
-    "payout": "",
-    "growth": "",
-    "ttm": 5.29,
-    "est": 5.29
-  },
-  {
-    "code": "601838",
-    "name": "成都银行",
-    "price": 18.16,
-    "div": 0.921,
-    "cap": "767亿",
-    "nature": "城商行",
-    "years": 9,
-    "payout": "",
-    "growth": "",
-    "ttm": 5.09,
-    "est": 5.09
-  },
-  {
-    "code": "601860",
-    "name": "紫金银行",
-    "price": 2.54,
-    "div": 0.1,
-    "cap": "90亿",
-    "nature": "农商行",
-    "years": 8,
-    "payout": "",
-    "growth": "",
-    "ttm": 3.94,
-    "est": 3.94
-  },
-  {
-    "code": "601916",
-    "name": "浙商银行",
-    "price": 2.93,
-    "div": 0.131,
-    "cap": "623亿",
-    "nature": "股份制",
-    "years": 4,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.53,
-    "est": 4.53
-  },
-  {
     "code": "601939",
     "name": "建设银行",
     "price": 10.3,
     "div": 0.3887,
-    "cap": "978亿",
+    "cap": "981亿",
     "nature": "国有行",
     "years": 20,
     "payout": "",
     "growth": "",
     "ttm": 3.81,
-    "est": 3.81
-  },
-  {
-    "code": "601963",
-    "name": "重庆银行",
-    "price": 10.92,
-    "div": 0.4477,
-    "cap": "222亿",
-    "nature": "城商行",
-    "years": 6,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.04,
-    "est": 4.1
+    "est": 3.77
   },
   {
     "code": "601988",
@@ -837,532 +629,403 @@
     "payout": "",
     "growth": "",
     "ttm": 3.89,
-    "est": 3.89
-  },
-  {
-    "code": "601997",
-    "name": "贵阳银行",
-    "price": 5.61,
-    "div": 0.3,
-    "cap": "205亿",
-    "nature": "城商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 5.35,
-    "est": 5.35
+    "est": 3.8
   },
   {
     "code": "601998",
     "name": "中信银行",
     "price": 7.69,
     "div": 0.381,
-    "cap": "3065亿",
+    "cap": "3090亿",
     "nature": "股份制",
     "years": 10,
     "payout": "",
     "growth": "",
     "ttm": 5.07,
-    "est": 5.07
-  },
-  {
-    "code": "603323",
-    "name": "苏农银行",
-    "price": 4.15,
-    "div": 0.21,
-    "cap": "92亿",
-    "nature": "农商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.59,
-    "est": 5.05
+    "est": 4.95
   },
   {
     "code": "000001",
     "name": "平安银行",
     "price": 11.25,
     "div": 0.596,
-    "cap": "2179亿",
+    "cap": "2187亿",
     "nature": "股份制",
     "years": 14,
     "payout": "",
     "growth": "",
     "ttm": 5.31,
-    "est": 5.31
-  },
-  {
-    "code": "001227",
-    "name": "兰州银行",
-    "price": 2.13,
-    "div": 0.08,
-    "cap": "90亿",
-    "nature": "城商行",
-    "years": 5,
-    "payout": "",
-    "growth": "",
-    "ttm": 3.76,
-    "est": 3.76
-  },
-  {
-    "code": "002142",
-    "name": "宁波银行",
-    "price": 32.29,
-    "div": 1.2,
-    "cap": "2088亿",
-    "nature": "城商行",
-    "years": 20,
-    "payout": "",
-    "growth": "",
-    "ttm": 3.79,
-    "est": 3.79
-  },
-  {
-    "code": "002807",
-    "name": "江阴银行",
-    "price": 3.91,
-    "div": 0.22,
-    "cap": "106亿",
-    "nature": "农商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 5.12,
-    "est": 5.63
-  },
-  {
-    "code": "002839",
-    "name": "张家港行",
-    "price": 4.3,
-    "div": 0.22,
-    "cap": "105亿",
-    "nature": "农商行",
-    "years": 10,
-    "payout": "",
-    "growth": "",
-    "ttm": 5.12,
-    "est": 5.12
-  },
-  {
-    "code": "002936",
-    "name": "郑州银行",
-    "price": 1.76,
-    "div": 0.02,
-    "cap": "124亿",
-    "nature": "城商行",
-    "years": 1,
-    "payout": "",
-    "growth": "",
-    "ttm": 0,
-    "est": 1.14
-  },
-  {
-    "code": "002948",
-    "name": "青岛银行",
-    "price": 5.72,
-    "div": 0.18,
-    "cap": "201亿",
-    "nature": "城商行",
-    "years": 8,
-    "payout": "",
-    "growth": "",
-    "ttm": 3.15,
-    "est": 3.15
-  },
-  {
-    "code": "002958",
-    "name": "青农商行",
-    "price": 2.96,
-    "div": 0.12,
-    "cap": "161亿",
-    "nature": "农商行",
-    "years": 3,
-    "payout": "",
-    "growth": "",
-    "ttm": 4.05,
-    "est": 4.05
+    "est": 5.3
   },
   {
     "code": "002966",
     "name": "苏州银行",
     "price": 8.44,
     "div": 0.36,
-    "cap": "366亿",
+    "cap": "372亿",
     "nature": "城商行",
     "years": 7,
     "payout": "",
     "growth": "",
     "ttm": 4.33,
-    "est": 4.33
-  }
-];
-  var LATEST_SNAPSHOT=[
-  {
-    "code": "000001",
-    "name": "平安银行",
-    "price": 11.25,
-    "cap": "2187亿",
-    "div": 0.596,
-    "ttm": 5.31,
-    "nature": "股份制",
-    "years": 14
-  },
-  {
-    "code": "000429",
-    "name": "粤高速A",
-    "price": 13.23,
-    "cap": "277亿",
-    "div": 0.52,
-    "ttm": 4.57,
-    "nature": "高速",
-    "years": 28,
-    "est": null
-  },
-  {
-    "code": "002142",
-    "name": "宁波银行",
-    "price": 32.29,
-    "cap": "2107亿",
-    "div": 1.2,
-    "ttm": 3.79,
-    "nature": "城商行",
-    "years": 20
-  },
-  {
-    "code": "002966",
-    "name": "苏州银行",
-    "price": 8.44,
-    "cap": "372亿",
-    "div": 0.36,
-    "ttm": 4.33,
-    "nature": "城商行",
-    "years": 7
-  },
-  {
-    "code": "600000",
-    "name": "浦发银行",
-    "price": 9.18,
-    "cap": "3061亿",
-    "div": 0.42,
-    "ttm": 4.58,
-    "nature": "股份制",
-    "years": 25
-  },
-  {
-    "code": "600015",
-    "name": "华夏银行",
-    "price": 6.66,
-    "cap": "1031亿",
-    "div": 0.42,
-    "ttm": 6.28,
-    "nature": "股份制",
-    "years": 25
-  },
-  {
-    "code": "600016",
-    "name": "民生银行",
-    "price": 3.47,
-    "cap": "1241亿",
-    "div": 0.189,
-    "ttm": 5.4,
-    "nature": "股份制",
-    "years": 24
-  },
-  {
-    "code": "600025",
-    "name": "华能水电",
-    "price": 9.71,
-    "cap": "1809亿",
-    "div": 0.2,
-    "ttm": 2.11,
-    "nature": "水电",
-    "years": 8,
-    "est": null
-  },
-  {
-    "code": "600028",
-    "name": "中国石化",
-    "price": 4.99,
-    "cap": "6034亿",
-    "div": 0.2,
-    "ttm": 4.01,
-    "nature": "石化",
-    "years": 24,
-    "est": null
-  },
-  {
-    "code": "600036",
-    "name": "招商银行",
-    "price": 38.77,
-    "cap": "8016亿",
-    "div": 2.016,
-    "ttm": 5.22,
-    "nature": "股份制",
-    "years": 24
-  },
-  {
-    "code": "600377",
-    "name": "宁沪高速",
-    "price": 12.01,
-    "cap": "605亿",
-    "div": 0.49,
-    "ttm": 4.08,
-    "nature": "高速",
-    "years": 25,
-    "est": null
-  },
-  {
-    "code": "600795",
-    "name": "国电电力",
-    "price": 5.07,
-    "cap": "904亿",
-    "div": 0.241,
-    "ttm": 4.75,
-    "nature": "电力",
-    "years": 27,
-    "est": null
+    "est": 4.27
   },
   {
     "code": "600900",
     "name": "长江电力",
     "price": 28.24,
-    "cap": "6873亿",
     "div": 1,
-    "ttm": 3.56,
+    "cap": "6873亿",
     "nature": "水电",
-    "years": 22
+    "years": 22,
+    "ttm": 3.56,
+    "est": 3.54
   },
   {
-    "code": "600908",
-    "name": "无锡银行",
-    "price": 5.4,
-    "cap": "109亿",
-    "div": 0.24,
-    "ttm": 4.46,
-    "nature": "农商行",
-    "years": 10
+    "code": "600795",
+    "name": "国电电力",
+    "price": 5.07,
+    "div": 0.241,
+    "cap": "904亿",
+    "nature": "电力",
+    "years": 27,
+    "ttm": 4.75,
+    "est": 4.75
+  },
+  {
+    "code": "600377",
+    "name": "宁沪高速",
+    "price": 12.01,
+    "div": 0.49,
+    "cap": "605亿",
+    "nature": "高速",
+    "years": 25,
+    "ttm": 4.08,
+    "est": 4.08
+  },
+  {
+    "code": "600028",
+    "name": "中国石化",
+    "price": 4.99,
+    "div": 0.2,
+    "cap": "6034亿",
+    "nature": "石化",
+    "years": 24,
+    "ttm": 4.01,
+    "est": 4.01
+  },
+  {
+    "code": "600025",
+    "name": "华能水电",
+    "price": 9.71,
+    "div": 0.2,
+    "cap": "1809亿",
+    "nature": "水电",
+    "years": 8,
+    "ttm": 2.06,
+    "est": 2.06
+  },
+  {
+    "code": "000429",
+    "name": "粤高速A",
+    "price": 13.23,
+    "div": 0.52,
+    "cap": "277亿",
+    "nature": "高速",
+    "years": 28,
+    "ttm": 3.93,
+    "est": 3.93
+  }
+  ];
+    var LATEST_SNAPSHOT=[
+  {
+    "code": "600000",
+    "name": "浦发银行",
+    "price": 9.18,
+    "div": 0.42,
+    "cap": "3061亿",
+    "nature": "股份制",
+    "years": 25,
+    "payout": "",
+    "growth": "",
+    "ttm": 4.58,
+    "est": 4.58
+  },
+  {
+    "code": "600015",
+    "name": "华夏银行",
+    "price": 6.66,
+    "div": 0.42,
+    "cap": "1031亿",
+    "nature": "股份制",
+    "years": 25,
+    "payout": "",
+    "growth": "",
+    "ttm": 6.28,
+    "est": 6.31
+  },
+  {
+    "code": "600016",
+    "name": "民生银行",
+    "price": 3.47,
+    "div": 0.189,
+    "cap": "1241亿",
+    "nature": "股份制",
+    "years": 24,
+    "payout": "",
+    "growth": "",
+    "ttm": 5.4,
+    "est": 5.45
+  },
+  {
+    "code": "600036",
+    "name": "招商银行",
+    "price": 38.77,
+    "div": 2.016,
+    "cap": "8016亿",
+    "nature": "股份制",
+    "years": 24,
+    "payout": "",
+    "growth": "",
+    "ttm": 5.22,
+    "est": 5.2
   },
   {
     "code": "600919",
     "name": "江苏银行",
     "price": 11.69,
-    "cap": "2154亿",
     "div": 0.5641,
+    "cap": "2154亿",
+    "nature": "城商行",
+    "years": 10,
+    "payout": "",
+    "growth": "",
     "ttm": 4.82,
-    "nature": "城商行",
-    "years": 10
-  },
-  {
-    "code": "600926",
-    "name": "杭州银行",
-    "price": 16.18,
-    "cap": "1155亿",
-    "div": 0.66,
-    "ttm": 4.15,
-    "nature": "城商行",
-    "years": 10
-  },
-  {
-    "code": "601009",
-    "name": "南京银行",
-    "price": 11.21,
-    "cap": "1393亿",
-    "div": 0.5291,
-    "ttm": 4.72,
-    "nature": "城商行",
-    "years": 19
-  },
-  {
-    "code": "601077",
-    "name": "渝农商行",
-    "price": 6.53,
-    "cap": "578亿",
-    "div": 0.3209,
-    "ttm": 4.93,
-    "nature": "农商行",
-    "years": 7
-  },
-  {
-    "code": "601128",
-    "name": "常熟银行",
-    "price": 6.13,
-    "cap": "224亿",
-    "div": 0.27,
-    "ttm": 4.03,
-    "nature": "农商行",
-    "years": 10
+    "est": 4.83
   },
   {
     "code": "601166",
     "name": "兴业银行",
     "price": 18.17,
-    "cap": "3841亿",
     "div": 1.066,
-    "ttm": 5.88,
+    "cap": "3841亿",
     "nature": "股份制",
-    "years": 20
+    "years": 20,
+    "payout": "",
+    "growth": "",
+    "ttm": 5.88,
+    "est": 5.87
   },
   {
     "code": "601169",
     "name": "北京银行",
     "price": 4.99,
-    "cap": "1061亿",
     "div": 0.278,
+    "cap": "1061亿",
+    "nature": "城商行",
+    "years": 19,
+    "payout": "",
+    "growth": "",
     "ttm": 5.55,
-    "nature": "城商行",
-    "years": 19
-  },
-  {
-    "code": "601229",
-    "name": "上海银行",
-    "price": 9.31,
-    "cap": "1321亿",
-    "div": 0.52,
-    "ttm": 5.63,
-    "nature": "城商行",
-    "years": 10
+    "est": 5.57
   },
   {
     "code": "601288",
     "name": "农业银行",
     "price": 6.56,
-    "cap": "2.06万亿",
     "div": 0.2495,
-    "ttm": 3.9,
+    "cap": "2.06万亿",
     "nature": "国有行",
-    "years": 16
+    "years": 16,
+    "payout": "",
+    "growth": "",
+    "ttm": 3.9,
+    "est": 3.8
   },
   {
     "code": "601328",
     "name": "交通银行",
     "price": 6.93,
-    "cap": "1804亿",
     "div": 0.3247,
-    "ttm": 4.71,
+    "cap": "1804亿",
     "nature": "国有行",
-    "years": 18
+    "years": 18,
+    "payout": "",
+    "growth": "",
+    "ttm": 4.71,
+    "est": 4.69
   },
   {
     "code": "601398",
     "name": "工商银行",
     "price": 7.6,
-    "cap": "2.03万亿",
     "div": 0.31,
-    "ttm": 4.12,
+    "cap": "2.03万亿",
     "nature": "国有行",
-    "years": 20
-  },
-  {
-    "code": "601528",
-    "name": "瑞丰银行",
-    "price": 4.86,
-    "cap": "91亿",
-    "div": 0.21,
-    "ttm": 4.34,
-    "nature": "农商行",
-    "years": 5
-  },
-  {
-    "code": "601577",
-    "name": "长沙银行",
-    "price": 9.18,
-    "cap": "370亿",
-    "div": 0.43,
-    "ttm": 4.7,
-    "nature": "城商行",
-    "years": 8
+    "years": 20,
+    "payout": "",
+    "growth": "",
+    "ttm": 4.12,
+    "est": 4.08
   },
   {
     "code": "601658",
     "name": "邮储银行",
     "price": 4.95,
-    "cap": "3583亿",
     "div": 0.2183,
-    "ttm": 4.42,
+    "cap": "3583亿",
     "nature": "国有行",
-    "years": 7
+    "years": 7,
+    "payout": "",
+    "growth": "",
+    "ttm": 4.42,
+    "est": 4.41
   },
   {
     "code": "601818",
     "name": "光大银行",
     "price": 3.02,
-    "cap": "1406亿",
     "div": 0.175,
+    "cap": "1406亿",
+    "nature": "股份制",
+    "years": 16,
+    "payout": "",
+    "growth": "",
     "ttm": 5.79,
-    "nature": "股份制",
-    "years": 16
-  },
-  {
-    "code": "601838",
-    "name": "成都银行",
-    "price": 18.16,
-    "cap": "770亿",
-    "div": 0.921,
-    "ttm": 5.09,
-    "nature": "城商行",
-    "years": 9
-  },
-  {
-    "code": "601860",
-    "name": "紫金银行",
-    "price": 2.54,
-    "cap": "91亿",
-    "div": 0.1,
-    "ttm": 3.94,
-    "nature": "农商行",
-    "years": 8
-  },
-  {
-    "code": "601916",
-    "name": "浙商银行",
-    "price": 2.93,
-    "cap": "631亿",
-    "div": 0.131,
-    "ttm": 4.53,
-    "nature": "股份制",
-    "years": 4
+    "est": 5.79
   },
   {
     "code": "601939",
     "name": "建设银行",
     "price": 10.3,
-    "cap": "981亿",
     "div": 0.3887,
-    "ttm": 3.81,
+    "cap": "981亿",
     "nature": "国有行",
-    "years": 20
+    "years": 20,
+    "payout": "",
+    "growth": "",
+    "ttm": 3.81,
+    "est": 3.77
   },
   {
     "code": "601988",
     "name": "中国银行",
     "price": 5.95,
-    "cap": "1.23万亿",
     "div": 0.2263,
-    "ttm": 3.89,
+    "cap": "1.23万亿",
     "nature": "国有行",
-    "years": 20
+    "years": 20,
+    "payout": "",
+    "growth": "",
+    "ttm": 3.89,
+    "est": 3.8
   },
   {
     "code": "601998",
     "name": "中信银行",
     "price": 7.69,
-    "cap": "3090亿",
     "div": 0.381,
-    "ttm": 5.07,
+    "cap": "3090亿",
     "nature": "股份制",
-    "years": 10
+    "years": 10,
+    "payout": "",
+    "growth": "",
+    "ttm": 5.07,
+    "est": 4.95
   },
   {
-    "code": "603323",
-    "name": "苏农银行",
-    "price": 4.15,
-    "cap": "93亿",
-    "div": 0.21,
-    "ttm": 4.59,
-    "nature": "农商行",
-    "years": 10
+    "code": "000001",
+    "name": "平安银行",
+    "price": 11.25,
+    "div": 0.596,
+    "cap": "2187亿",
+    "nature": "股份制",
+    "years": 14,
+    "payout": "",
+    "growth": "",
+    "ttm": 5.31,
+    "est": 5.3
+  },
+  {
+    "code": "002966",
+    "name": "苏州银行",
+    "price": 8.44,
+    "div": 0.36,
+    "cap": "372亿",
+    "nature": "城商行",
+    "years": 7,
+    "payout": "",
+    "growth": "",
+    "ttm": 4.33,
+    "est": 4.27
+  },
+  {
+    "code": "600900",
+    "name": "长江电力",
+    "price": 28.24,
+    "div": 1,
+    "cap": "6873亿",
+    "nature": "水电",
+    "years": 22,
+    "ttm": 3.56,
+    "est": 3.54
+  },
+  {
+    "code": "600795",
+    "name": "国电电力",
+    "price": 5.07,
+    "div": 0.241,
+    "cap": "904亿",
+    "nature": "电力",
+    "years": 27,
+    "ttm": 4.75,
+    "est": 4.75
+  },
+  {
+    "code": "600377",
+    "name": "宁沪高速",
+    "price": 12.01,
+    "div": 0.49,
+    "cap": "605亿",
+    "nature": "高速",
+    "years": 25,
+    "ttm": 4.08,
+    "est": 4.08
+  },
+  {
+    "code": "600028",
+    "name": "中国石化",
+    "price": 4.99,
+    "div": 0.2,
+    "cap": "6034亿",
+    "nature": "石化",
+    "years": 24,
+    "ttm": 4.01,
+    "est": 4.01
+  },
+  {
+    "code": "600025",
+    "name": "华能水电",
+    "price": 9.71,
+    "div": 0.2,
+    "cap": "1809亿",
+    "nature": "水电",
+    "years": 8,
+    "ttm": 2.06,
+    "est": 2.06
+  },
+  {
+    "code": "000429",
+    "name": "粤高速A",
+    "price": 13.23,
+    "div": 0.52,
+    "cap": "277亿",
+    "nature": "高速",
+    "years": 28,
+    "ttm": 3.93,
+    "est": 3.93
   }
-];;;
+  ];
   var SAMPLE_HOLDINGS=[
     {code:"601398",shares:5000,cost:5.80},
     {code:"601288",shares:8000,cost:3.90},
@@ -1654,318 +1317,4 @@
       save(KEYS.calendar,calendar);renderAll();toast("已删除");
     });
   }
-  $("calForm").onsubmit=function(e){
-    e.preventDefault();
-    var key=$("c_edit").value;
-    var rec={code:$("c_code").value,type:$("c_type").value,date:$("c_date").value,
-      amt:$("c_amt").value?+$("c_amt").value:"",memo:$("c_memo").value.trim(),status:"todo"};
-    if(key){calendar=calendar.filter(function(c){return !(c.code===key.split("|")[0]&&c.date===key.split("|")[1]);});}
-    else{calendar=calendar.filter(function(c){return !(c.code===rec.code&&c.date===rec.date);});}
-    calendar.push(rec);save(KEYS.calendar,calendar);
-    $("calForm").reset();$("c_edit").value="";renderAll();toast("已保存");
-  };
-  $("c_reset").onclick=function(){$("calForm").reset();$("c_edit").value="";};
-
-  // ---------- 备份 ----------
-  $("btnExport").onclick=function(){
-    var data={_type:"bankstock_workspace",_v:1,exported:new Date().toISOString(),
-      stocks:stocks,holdings:holdings,calendar:calendar};
-    var blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    var a=document.createElement("a");a.href=URL.createObjectURL(blob);
-    a.download="攒股收息台-备份-"+new Date().toISOString().slice(0,10)+".json";a.click();
-    toast("已导出 JSON");
-  };
-
-  // ---------- 自动备份（File System Access） ----------
-  var FS_SUPPORT=("showSaveFilePicker" in window);
-  var _backupHandle=null,_backupTimer=null;
-  function _idxOpen(){return new Promise(function(res,rej){var r=indexedDB.open("wb_bankstock_bk",1);r.onupgradeneeded=function(){r.result.createObjectStore("handles");};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
-  function _idxPut(k,v){return _idxOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction("handles","readwrite");tx.objectStore("handles").put(v,k);tx.oncomplete=function(){res();};tx.onerror=function(){rej(tx.error);};});});}
-  function _idxGet(k){return _idxOpen().then(function(db){return new Promise(function(res,rej){var tx=db.transaction("handles","readonly");var rq=tx.objectStore("handles").get(k);rq.onsuccess=function(){res(rq.result);};rq.onerror=function(){rej(rq.error);};});});}
-  function setBackupBtn(on){var b=$("btnBackup");if(!b)return;var lab=$("btnBackupLabel");if(on){b.classList.add("on");if(lab)lab.textContent="自动备份✓";}else{b.classList.remove("on");if(lab)lab.textContent="自动备份";}}
-  function scheduleBackup(){if(!_backupHandle)return;if(_backupTimer)clearTimeout(_backupTimer);_backupTimer=setTimeout(writeAutoBackup,800);}
-  function writeAutoBackup(){
-    if(!_backupHandle)return;
-    var data={_type:"bankstock_workspace",_v:1,exported:new Date().toISOString(),stocks:stocks,holdings:holdings,calendar:calendar};
-    _backupHandle.createWritable().then(function(w){return w.write(JSON.stringify(data,null,2)).then(function(){return w.close();});})
-      .catch(function(err){console.warn("自动备份写入失败",err);_backupHandle=null;setBackupBtn(false);_idxPut("auto",null).catch(function(){});toast("自动备份已停止（文件权限失效），可重新设置");});
-  }
-  function setupAutoBackup(){
-    if(!FS_SUPPORT){toast("当前浏览器不支持自动写文件，请用 Chrome / Edge");return;}
-    window.showSaveFilePicker({suggestedName:"攒股收息台-自动备份.json",types:[{description:"JSON",accept:{"application/json":[".json"]}}]})
-      .then(function(handle){_backupHandle=handle;return _idxPut("auto",handle);})
-      .then(function(){setBackupBtn(true);return writeAutoBackup();})
-      .then(function(){toast("已开启自动备份，数据将自动写入该文件");})
-      .catch(function(err){if(err&&err.name==="AbortError")return;console.warn(err);toast("设置自动备份失败");});
-  }
-  if(FS_SUPPORT){_idxGet("auto").then(function(h){if(h){_backupHandle=h;setBackupBtn(true);}}).catch(function(){});}
-  $("btnBackup").onclick=setupAutoBackup;
-
-  $("btnImport").onclick=function(){$("fileInput").click();};
-  $("fileInput").onchange=function(e){
-    var f=e.target.files[0];if(!f)return;
-    var r=new FileReader();
-    r.onload=function(){
-      try{
-        var data=JSON.parse(r.result);
-        function mergeArr(arr,add){if(!add)return arr;add.forEach(function(x){var i=arr.findIndex(function(s){return s.code===x.code;});if(i>=0)arr[i]=x;else arr.push(x);});return arr;}
-        if(data.stocks)stocks=mergeArr(stocks,data.stocks);
-        if(data.holdings)holdings=mergeArr(holdings,data.holdings);
-        if(data.calendar)calendar=mergeArr(calendar,data.calendar);
-        save(KEYS.stocks,stocks);save(KEYS.holdings,holdings);save(KEYS.calendar,calendar);
-        renderAll();toast("已合并导入（新增/更新），共 "+stocks.length+" 股 / "+holdings.length+" 持仓 / "+calendar.length+" 事件");
-      }catch(err){toast("导入失败：文件格式不正确");}
-      $("fileInput").value="";
-    };
-    r.readAsText(f);
-  };
-
-  // ---------- 二次确认 ----------
-  var confirmCb=null;
-  function confirmDialog(text,cb){$("confirmText").textContent=text;confirmCb=cb;$("confirmMask").classList.add("show");}
-  $("confirmNo").onclick=function(){$("confirmMask").classList.remove("show");confirmCb=null;};
-  $("confirmYes").onclick=function(){var cb=confirmCb;$("confirmMask").classList.remove("show");confirmCb=null;if(cb)cb();};
-
-  // ---------- 添加股票 + 设置 ----------
-  var GH_TOKEN_KEY=K+"ghtoken";
-  function getToken(){try{return localStorage.getItem(GH_TOKEN_KEY)||"";}catch(e){return "";}}
-  function b64enc(str){return btoa(unescape(encodeURIComponent(str)));}
-  function b64dec(b64){return decodeURIComponent(escape(atob(b64)));}
-
-  function openAddStock(){
-    var f=document.getElementById("addStockForm");if(f)f.reset();
-    $("addStockMask").classList.add("show");
-    setTimeout(function(){var c=document.getElementById("asCode");if(c)c.focus();},60);
-  }
-  function closeAddStock(){$("addStockMask").classList.remove("show");}
-
-  // 浏览器端从东方财富 push2 拉取现价/市值/名称（该接口允许跨域）
-  function secidOf(code){
-    var c=code.replace(/^(sh|sz)/,'');
-    return (/^[69]/.test(c)?'1.':'0.')+c;
-  }
-  function fetchQuoteBrowser(code){
-    var sid=secidOf(code);
-    var url='https://push2.eastmoney.com/api/qt/stock/get?secid='+sid+'&fields=f43,f57,f58,f116&invt=2&fltt=2';
-    return fetch(url,{headers:{'User-Agent':'Mozilla/5.0'}}).then(function(r){return r.json();}).then(function(j){
-      var d=j.data||{};
-      var price=parseFloat(d.f43)||0;
-      var cap=d.f116?Math.round(d.f116/1e8)+'亿':'';
-      return {price:price, cap:cap, name:d.f58||''};
-    });
-  }
-
-  function submitAddStock(){
-    var code=(document.getElementById("asCode").value||"").trim();
-    var name=(document.getElementById("asName").value||"").trim();
-    if(!/^\d{6}$/.test(code)){toast("代码必须是 6 位数字");return;}
-    if(!name){toast("请填写名称");return;}
-    if(stockByCode(code)){toast("该代码已存在");return;}
-    var price=parseFloat(document.getElementById("asPrice").value)||0;
-    var div=parseFloat(document.getElementById("asDiv").value)||0;
-    var cap=(document.getElementById("asCap").value||"").trim();
-    var nature=document.getElementById("asNature").value||"";
-    var yv=parseInt(document.getElementById("asYears").value,10);
-    var years=isNaN(yv)?null:yv;
-    toast("正在从行情拉取股价/市值…");
-    fetchQuoteBrowser(code).then(function(q){
-      if(q){
-        if(!name && q.name) name=q.name;
-        if(!price && q.price>0) price=q.price;
-        if(!cap && q.cap) cap=q.cap;
-      }
-      var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
-             est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
-      stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
-      toast("已加入本地："+name+(price?"（现价 "+price+"）":""));
-      pushFundamental(s).then(function(ok){
-        if(ok)toast("已同步到自动更新；分红将自动补全 ✅");
-        else toast("已加入本地；点「设置」填令牌可自动同步");
-      }).catch(function(){
-        toast("本地已加入；自动同步失败（可让助手代同步）");
-      });
-    }).catch(function(){
-      // 行情拉取失败也不阻断：用用户手填值
-      var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
-             est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
-      stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
-      toast("已加入本地："+name);
-      pushFundamental(s);
-    });
-  }
-
-  // 把新股票写入仓库的 fundamentals.json（需 GitHub 令牌），之后 Actions 自动拉价
-  function pushFundamental(stock){
-    var token=getToken();
-    if(!token)return Promise.resolve(false);
-    var api="https://api.github.com/repos/"+GH_USER+"/"+GH_REPO+"/contents/fundamentals.json";
-    var hd={"Authorization":"Bearer "+token,"Accept":"application/vnd.github+json","Content-Type":"application/json","User-Agent":"bankstock-workbench"};
-    return fetch(api,{headers:hd}).then(function(r){
-      if(!r.ok)throw new Error("读取失败("+r.status+")");return r.json();
-    }).then(function(d){
-      var arr=JSON.parse(b64dec(d.content));
-      var idx=-1;for(var i=0;i<arr.length;i++){if(arr[i].code===stock.code){idx=i;break;}}
-      var entry={code:stock.code,name:stock.name,price:stock.price||0,cap:stock.cap||"",div:stock.div||0,ttm:null,nature:stock.nature||"",years:stock.years||null};
-      if(idx>=0)arr[idx]=entry;else arr.push(entry);
-      return fetch(api,{method:"PUT",headers:hd,body:JSON.stringify({
-        message:"feat: 新增股票 "+stock.code+" "+stock.name,
-        content:b64enc(JSON.stringify(arr,null,2)),
-        sha:d.sha
-      })});
-    }).then(function(r){
-      if(!r.ok)throw new Error("写入失败("+r.status+")");return true;
-    });
-  }
-
-  function openSettings(){
-    var t=document.getElementById("setToken");if(t)t.value=getToken();
-    $("settingsMask").classList.add("show");
-  }
-  function saveSettings(){
-    var v=(document.getElementById("setToken").value||"").trim();
-    try{localStorage.setItem(GH_TOKEN_KEY,v);}catch(e){}
-    toast(v?"已保存 GitHub 令牌":"已清空令牌");
-    $("settingsMask").classList.remove("show");
-  }
-  function clearSettings(){
-    try{localStorage.removeItem(GH_TOKEN_KEY);}catch(e){}
-    var t=document.getElementById("setToken");if(t)t.value="";
-    toast("已清除令牌");$("settingsMask").classList.remove("show");
-  }
-
-  $("btnAdd").onclick=openAddStock;
-  $("btnSettings").onclick=openSettings;
-  $("addStockSave").onclick=submitAddStock;
-  $("addStockCancel").onclick=closeAddStock;
-  $("settingsSave").onclick=saveSettings;
-  $("settingsClear").onclick=clearSettings;
-  ["addStockMask","settingsMask"].forEach(function(id){
-    var m=$(id);if(!m)return;
-    m.addEventListener("click",function(e){if(e.target===m)m.classList.remove("show");});
-  });
-
-  // ---------- Tab ----------
-  function switchTab(name){
-    document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("active",t.getAttribute("data-tab")===name);});
-    document.querySelectorAll(".section").forEach(function(s){s.classList.toggle("active",s.id==="sec-"+name);});
-  }
-  document.querySelectorAll(".tab").forEach(function(t){t.onclick=function(){switchTab(t.getAttribute("data-tab"));};});
-
-  // ---------- 30条提示 ----------
-  function checkHint(){
-    var total=stocks.length+holdings.length+calendar.length;
-    $("hint30").style.display=total>=30?"flex":"none";
-  }
-
-  // ---------- 总渲染 ----------
-  function renderAll(){renderToday();renderLib();renderHold();renderCal();checkHint();}
-  renderAll();
-
-  // ---------- 全自动同步最新底表（GitHub Pages 数据源，每15分钟自动刷新）----------
-  // ⚠️ 部署好 GitHub Actions 后，把下面的 GH_USER / GH_REPO 改成你自己的仓库（详见 README）
-  var GH_USER="xlsh2026";              // GitHub 用户名
-  var GH_REPO="bank-stock-data";        // GitHub 仓库名
-  // 数据源优先级：jsDelivr 镜像（国内更快）→ GitHub raw → 同域兜底
-  var CDN_URL="https://cdn.jsdelivr.net/gh/"+GH_USER+"/"+GH_REPO+"@main/prices.json";
-  var DATA_URL="https://raw.githubusercontent.com/"+GH_USER+"/"+GH_REPO+"/main/prices.json";
-  var FALLBACK_URL="prices.json";        // 同域兜底（GitHub Pages / CloudStudio / 本地打开时使用）
-  var lastAutoTs=0;
-  function applyPricePatch(prices){
-    if(!prices||!prices.length)return 0;var n=0;
-    prices.forEach(function(p){
-      var s=stocks.find(function(x){return x.code===p.code;});if(!s)return;
-      if(p.price!=null&&p.price>0)s.price=p.price;
-      if(p.cap!=null&&p.cap!=="")s.cap=p.cap;
-      if(p.div!=null)s.div=p.div;
-      if(p.ttm!=null)s.ttm=p.ttm;
-      if(p.nature!=null&&p.nature!=="")s.nature=p.nature;
-      if(p.years!=null)s.years=p.years;
-      if(s.price>0&&s.div>0)s.est=+(s.div/s.price*100).toFixed(2);
-      pushHistory(s.code,s.price);
-      n++;
-    });
-    if(n>0){save(KEYS.stocks,stocks);}
-    return n;
-  }
-  function fetchJson(u){return fetch(u+"?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});}
-  function applyAuto(data){
-    var ts=data&&data.updated?new Date(data.updated).getTime():0;
-    if(ts>lastAutoTs){lastAutoTs=ts;var n=applyPricePatch(data.prices);renderAll();if(n>0)toast("已自动同步最新底表 ("+n+" 只)");}
-  }
-  function autoSync(){
-    // 优先用 raw（推送即生效、无 CDN 缓存），jsDelivr 仅作被墙时的兜底
-    fetchJson(DATA_URL)
-      .then(applyAuto)
-      .catch(function(){fetchJson(CDN_URL)
-        .then(applyAuto)
-        .catch(function(){fetchJson(FALLBACK_URL)
-          .then(applyAuto)
-          .catch(function(){});});});
-  }
-  autoSync();
-  setInterval(autoSync,5*60*1000);
-
-  // ---------- 股价走势图（内联 SVG，纯前端积累）----------
-  function loadChart(){try{return JSON.parse(localStorage.getItem(KEYS.chart))||{};}catch(e){return {};}}
-  function saveChart(c){try{localStorage.setItem(KEYS.chart,JSON.stringify(c));}catch(e){}}
-  function pushHistory(code,price,ts){
-    if(!price||price<=0)return;
-    var c=loadChart();
-    if(!c[code])c[code]=[];
-    var arr=c[code],t=ts||Date.now(),last=arr[arr.length-1];
-    if(last&&Math.floor(last.t/60000)===Math.floor(t/60000)){last.p=price;last.t=t;}
-    else arr.push({t:t,p:price});
-    if(arr.length>180)arr=arr.slice(arr.length-180);
-    c[code]=arr;saveChart(c);
-  }
-  function renderChart(code){
-    var s=stockByCode(code);if(!s)return;
-    var c=loadChart(),pts=(c[code]||[]).slice();
-    if(pts.length===0&&s.price>0)pts=[{t:Date.now(),p:s.price}];
-    var box=$("chartBox");
-    var W=480,H=240,padL=10,padR=10,padT=20,padB=28;
-    var iw=W-padL-padR,ih=H-padT-padB;
-    var html='<h3>'+s.name+' <span class="pill">'+code+'</span> 现价走势</h3>';
-    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block">';
-    if(pts.length>=2){
-      var ps=pts.map(function(d){return d.p;});
-      var min=Math.min.apply(null,ps),max=Math.max.apply(null,ps);
-      if(min===max){min-=0.05;max+=0.05;}
-      var n=pts.length;
-      var X=function(i){return padL+(n===1?iw/2:iw*i/(n-1));};
-      var Y=function(v){return padT+ih-((v-min)/(max-min))*ih;};
-      svg+='<line x1="'+padL+'" y1="'+(padT+ih)+'" x2="'+(W-padR)+'" y2="'+(padT+ih)+'" stroke="#eee"/>';
-      var area='M'+X(0)+' '+Y(pts[0].p);
-      pts.forEach(function(d,i){area+=' L'+X(i)+' '+Y(d.p);});
-      area+=' L'+X(n-1)+' '+(padT+ih)+' L'+X(0)+' '+(padT+ih)+' Z';
-      svg+='<path d="'+area+'" fill="rgba(30,160,140,.10)"/>';
-      var line='M'+X(0)+' '+Y(pts[0].p);
-      pts.forEach(function(d,i){line+=' L'+X(i)+' '+Y(d.p);});
-      svg+='<path d="'+line+'" fill="none" stroke="#1ea08c" stroke-width="2" stroke-linejoin="round"/>';
-      svg+='<circle cx="'+X(0)+'" cy="'+Y(pts[0].p)+'" r="3" fill="#1ea08c"/>';
-      svg+='<circle cx="'+X(n-1)+'" cy="'+Y(pts[n-1].p)+'" r="3.5" fill="#0e8f7a"/>';
-      svg+='<text x="'+padL+'" y="'+(padT-7)+'" font-size="11" fill="#888">'+fmt(pts[0].p)+'</text>';
-      svg+='<text x="'+(W-padR)+'" y="'+(padT-7)+'" font-size="11" fill="#888" text-anchor="end">'+fmt(pts[n-1].p)+'</text>';
-      var dd=new Date(pts[n-1].t);
-      var lbl=(dd.getMonth()+1)+'-'+dd.getDate()+' '+('0'+dd.getHours()).slice(-2)+':'+('0'+dd.getMinutes()).slice(-2);
-      svg+='<text x="'+(W-padR)+'" y="'+(H-8)+'" font-size="10" fill="#aaa" text-anchor="end">'+lbl+'</text>';
-    }else{
-      var yc=padT+ih/2;
-      svg+='<circle cx="'+(W/2)+'" cy="'+yc+'" r="4" fill="#1ea08c"/>';
-      svg+='<text x="'+(W/2)+'" y="'+(yc-12)+'" font-size="14" fill="#0e8f7a" text-anchor="middle">'+fmt(pts[0].p)+'</text>';
-      html+='<p class="chart-hint">样本不足：数据从首次同步 / 载入底表起自动积累，每 15 分钟（交易时段）记录一次现价。保持页面打开，走势会慢慢画出来。</p>';
-    }
-    svg+='</svg>';
-    html+=svg;
-    html+='<div class="chart-meta">'+pts.length+' 个采样点 · 当前价 '+fmt(s.price)+' · 推算 '+fmt(s.est)+'%</div>';
-    html+='<button class="btn" type="button" onclick="closeChart()" style="margin-top:12px;width:100%">关闭</button>';
-    box.innerHTML=html;
-    $("chartMask").classList.add("show");
-  }
-  window.openChart=renderChart;
-  window.closeChart=function(){$("chartMask").classList.remove("show");};
-  document.getElementById("chartMask").addEventListener("click",function(e){if(e.target===this)window.closeChart();});
-})();
-</script>
-</body>
-</html>
+  $("calFor
