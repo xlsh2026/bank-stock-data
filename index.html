@@ -1434,6 +1434,9 @@
     var btn=document.getElementById("btnSnap");
     if(btn){btn.disabled=true;btn.textContent="载入中…";}
     try{
+      // 同步：只保留底表里存在的股票，删除本地多余的
+      var snapCodes={};LATEST_SNAPSHOT.forEach(function(s){snapCodes[s.code]=1;});
+      stocks=stocks.filter(function(x){return snapCodes[x.code];});
       var n=0;
       LATEST_SNAPSHOT.forEach(function(s){
         var t=stocks.find(function(x){return x.code===s.code;});
@@ -1445,7 +1448,7 @@
         n++;
       });
       save(KEYS.stocks,stocks);renderAll();
-      toast("已载入最新底表（"+n+" 只，2026-08-12 盘中）");
+      toast("已同步最新底表（"+n+" 只）");
     }catch(e){
       toast("载入失败："+(e&&e.message?e.message:e));
     }finally{
