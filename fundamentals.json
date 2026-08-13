@@ -273,51 +273,56 @@
     "code": "600795",
     "name": "国电电力",
     "price": 0,
-    "cap": "",
-    "div": 0,
-    "ttm": null,
-    "nature": "",
-    "years": null
+    "cap": "904亿",
+    "div": 0.241,
+    "ttm": 4.75,
+    "nature": "电力",
+    "years": 27,
+    "est": null
   },
   {
     "code": "600377",
     "name": "宁沪高速",
     "price": 0,
-    "cap": "",
-    "div": 0,
-    "ttm": null,
-    "nature": "",
-    "years": null
+    "cap": "605亿",
+    "div": 0.49,
+    "ttm": 4.08,
+    "nature": "高速",
+    "years": 25,
+    "est": null
   },
   {
     "code": "600028",
     "name": "中国石化",
     "price": 0,
-    "cap": "",
-    "div": 0,
-    "ttm": null,
-    "nature": "",
-    "years": null
+    "cap": "6034亿",
+    "div": 0.2,
+    "ttm": 4.01,
+    "nature": "石化",
+    "years": 24,
+    "est": null
   },
   {
     "code": "600025",
     "name": "华能水电",
     "price": 0,
-    "cap": "",
-    "div": 0,
-    "ttm": null,
-    "nature": "",
-    "years": null
+    "cap": "1809亿",
+    "div": 0.2,
+    "ttm": 2.11,
+    "nature": "水电",
+    "years": 8,
+    "est": null
   },
   {
     "code": "000429",
     "name": "粤高速A",
     "price": 0,
-    "cap": "",
-    "div": 0,
-    "ttm": null,
-    "nature": "",
-    "years": null
+    "cap": "277亿",
+    "div": 0.52,
+    "ttm": 4.57,
+    "nature": "高速",
+    "years": 28,
+    "est": null
   },
   {
     "code": "600926",
