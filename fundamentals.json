@@ -418,5 +418,15 @@
     "ttm": 4.33,
     "nature": "城商行",
     "years": 7
+  },
+  {
+    "code": "600900",
+    "name": "长江电力",
+    "price": 0,
+    "cap": "",
+    "div": 0,
+    "ttm": null,
+    "nature": "",
+    "years": null
   }
 ]
