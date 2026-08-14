@@ -108,10 +108,11 @@ async function pushFundamentals() {
   console.log('行情拉取成功 ' + Object.keys(live).length + '/' + codes.length + ' 条');
   const prices = FUND.map(s => {
     const p = (live[s.code] != null) ? live[s.code] : s.price;
-    const est = p > 0 ? +(s.div / p * 100).toFixed(2) : s.ttm;
-    return { code: s.code, name: s.name, price: p, cap: s.cap || '', div: s.div, ttm: s.ttm, nature: s.nature, years: s.years, est: est };
+    const est = p > 0 ? +(s.div / p * 100).toFixed(2) : null;
+    return { code: s.code, name: s.name, price: p, cap: s.cap || '', div: s.div, eps: s.eps || null, years: s.years, est: est };
   });
   const out = { updated: new Date().toISOString(), source: '腾讯实时行情(WorkBuddy自动更新)', prices };
+  fs.writeFileSync(path.join(__dirname, FILE), JSON.stringify(out, null, 2)); // 同步回写本地，保证 deploy/快照与远端一致
   const b64 = Buffer.from(JSON.stringify(out, null, 2)).toString('base64');
 
   // 4) 推送
