@@ -960,6 +960,28 @@
   }
   if(stocks===null)stocks=[];if(holdings===null)holdings=[];if(calendar===null)calendar=[];
 
+  // 兜底：若本地股票缺失 eps/div/years/price 等关键字段，用内嵌 LATEST_SNAPSHOT 补全（避免旧数据导致支付率/股息率为空）
+  function patchFromSnapshot(){
+    if(!LATEST_SNAPSHOT||!LATEST_SNAPSHOT.length||!stocks.length)return 0;
+    var map={}; LATEST_SNAPSHOT.forEach(function(p){map[p.code]=p;});
+    var patched=0;
+    stocks.forEach(function(s){
+      var p=map[s.code]; if(!p)return;
+      if((!s.eps||s.eps<=0)&&p.eps){s.eps=p.eps; patched++;}
+      if((!s.div||s.div<=0)&&p.div){s.div=p.div; patched++;}
+      if((!s.years||s.years<=0)&&p.years){s.years=p.years; patched++;}
+      if((!s.price||s.price<=0)&&p.price){s.price=p.price; patched++;}
+      if(!s.cap&&p.cap){s.cap=p.cap; patched++;}
+      if(!s.name&&p.name){s.name=p.name; patched++;}
+    });
+    if(patched>0){save(KEYS.stocks,stocks);}
+    return patched;
+  }
+  (function(){
+    var n=patchFromSnapshot();
+    if(n>0){ console.log("patchFromSnapshot 补全 "+n+" 项"); }
+  })();
+
   // ---------- 工具 ----------
   function $(id){return document.getElementById(id);}
   function stockByCode(c){return stocks.find(function(s){return s.code===c;});}
@@ -1571,25 +1593,33 @@
   var FALLBACK_URL="prices.json";        // 同域兜底（GitHub Pages / CloudStudio / 本地打开时使用）
   var lastAutoTs=0;
   function applyPricePatch(prices){
-    if(!prices||!prices.length)return 0;var n=0;
+    if(!prices||!prices.length)return 0;
+    var n=0, patched=0;
     prices.forEach(function(p){
       var s=stocks.find(function(x){return x.code===p.code;});if(!s)return;
-      if(p.price!=null&&p.price>0)s.price=p.price;
-      if(p.cap!=null&&p.cap!=="")s.cap=p.cap;
-      if(p.div!=null)s.div=p.div;
-      if(p.eps!=null)s.eps=p.eps;
-      if(p.years!=null)s.years=p.years;
+      if(p.price!=null&&p.price>0){ if(s.price!==p.price){s.price=p.price; patched++;} }
+      if(p.cap!=null&&p.cap!==""&&s.cap!==p.cap){s.cap=p.cap; patched++;}
+      if(p.div!=null&&s.div!==p.div){s.div=p.div; patched++;}
+      if(p.eps!=null&&s.eps!==p.eps){s.eps=p.eps; patched++;}
+      if(p.years!=null&&s.years!==p.years){s.years=p.years; patched++;}
       if(s.price>0&&s.div>0)s.est=+(s.div/s.price*100).toFixed(2);
       pushHistory(s.code,s.price);
       n++;
     });
-    if(n>0){save(KEYS.stocks,stocks);}
-    return n;
+    if(patched>0){save(KEYS.stocks,stocks);}
+    return patched;
   }
   function fetchJson(u){return fetch(u+"?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();});}
+  function stockNeedsRepair(s){return !s.eps || s.eps<=0 || !s.div || s.div<=0 || !s.years || s.years<=0 || !s.price || s.price<=0;}
   function applyAuto(data){
     var ts=data&&data.updated?new Date(data.updated).getTime():0;
-    if(ts>lastAutoTs){lastAutoTs=ts;var n=applyPricePatch(data.prices);renderAll();if(n>0)toast("已自动同步最新底表 ("+n+" 只)");}
+    var needRepair=stocks.length>0 && stocks.some(stockNeedsRepair);
+    if(ts>lastAutoTs || needRepair){
+      lastAutoTs=Math.max(lastAutoTs,ts);
+      var n=applyPricePatch(data.prices);
+      if(n>0){renderAll(); toast("已自动同步最新底表 ("+n+" 只)");}
+      else if(needRepair){renderAll();}
+    }
   }
   function autoSync(){
     // 优先用 raw（推送即生效、无 CDN 缓存），jsDelivr 仅作被墙时的兜底
