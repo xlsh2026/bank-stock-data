@@ -971,8 +971,19 @@
     "years": 28,
     "ttm": 3.93,
     "est": 3.93
+  },
+  {
+    "code": "000651",
+    "name": "格力电器",
+    "price": 40.04,
+    "div": 2,
+    "cap": "2243亿",
+    "nature": "白色家电",
+    "years": 25,
+    "ttm": 5,
+    "est": 5
   }
-];;;
+];
   var SAMPLE_HOLDINGS=[
     {code:"601398",shares:5000,cost:5.80},
     {code:"601288",shares:8000,cost:3.90},
@@ -1041,28 +1052,40 @@
   function loadSnapshot(){
     var btn=document.getElementById("btnSnap");
     if(btn){btn.disabled=true;btn.textContent="载入中…";}
+    // 以「远端底表 prices.json」为准（含新增股票 + 实时价），三级兜底：raw → jsDelivr → 同域 → 内嵌快照
+    fetchJson(DATA_URL)
+      .then(function(d){ applyBaseTable((d&&d.prices)||[]); })
+      .catch(function(){ fetchJson(CDN_URL)
+        .then(function(d){ applyBaseTable((d&&d.prices)||[]); })
+        .catch(function(){ fetchJson(FALLBACK_URL)
+          .then(function(d){ applyBaseTable((d&&d.prices)||[]); })
+          .catch(function(){ applyBaseTable(LATEST_SNAPSHOT); }); }); });
+  }
+  // 用一份「权威底表」(股票数组) 覆盖本地列表：新增股票自动出现，且带实时价
+  function applyBaseTable(prices){
     try{
-      // 同步：只保留底表里存在的股票，删除本地多余的
-      var snapCodes={};LATEST_SNAPSHOT.forEach(function(s){snapCodes[s.code]=1;});
-      stocks=stocks.filter(function(x){return snapCodes[x.code];});
+      if(!prices||!prices.length) throw new Error("底表为空");
+      var baseCodes={}; prices.forEach(function(p){baseCodes[p.code]=1;});
+      // 1) 仅保留底表存在的股票（与底表保持一致，会清掉不在底表中的本地临时股）
+      stocks=stocks.filter(function(x){return baseCodes[x.code];});
+      // 2) 加入/覆盖底表全部股票
       var n=0;
-      LATEST_SNAPSHOT.forEach(function(s){
-        var t=stocks.find(function(x){return x.code===s.code;});
-        if(!t){t={code:s.code,name:s.name};stocks.push(t);}
-        t.name=s.name;t.price=s.price;t.cap=s.cap;t.div=s.div;t.ttm=s.ttm;
-        t.nature=s.nature;t.years=s.years;
-        if(t.price>0&&t.div)t.est=+(t.div/t.price*100).toFixed(2);
-        pushHistory(t.code,t.price);
-        n++;
+      prices.forEach(function(p){
+        var t=stocks.find(function(x){return x.code===p.code;});
+        if(!t){t={code:p.code,name:p.name};stocks.push(t);}
+        t.name=p.name; t.price=p.price; t.cap=p.cap; t.div=p.div; t.ttm=p.ttm;
+        t.nature=p.nature; t.years=p.years;
+        if(t.price>0&&t.div) t.est=+(t.div/t.price*100).toFixed(2);
+        else if(p.est!=null) t.est=p.est;
+        pushHistory(t.code,t.price); n++;
       });
-      save(KEYS.stocks,stocks);renderAll();
-      // 关键修复：载入快照后强制立即用实时价覆盖，避免卡在旧快照价（如华夏银行 6.69）
-      lastAutoTs=0; autoSync();
+      save(KEYS.stocks,stocks); renderAll();
       toast("已同步最新底表（"+n+" 只）");
     }catch(e){
       toast("载入失败："+(e&&e.message?e.message:e));
     }finally{
-      if(btn){btn.disabled=false;btn.textContent="📥 载入最新底表";}
+      var b=document.getElementById("btnSnap");
+      if(b){b.disabled=false;b.textContent="📥 载入最新底表";}
     }
   }
   function setFilter(v){
