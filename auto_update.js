@@ -97,7 +97,7 @@ async function pushFundamentals() {
   }
   console.log((FORCE ? 'FORCE ' : '远端过期（' + Math.round(age / 60000) + ' 分钟前），') + '重新拉取并推送');
 
-  // 3) 拉取最新价（腾讯+东方财富双源，任一失败自动补另一源）
+  // 3) 拉取最新价（腾讯行情单源，运行于 WorkBuddy 沙箱，网络可达）
   const FUND = JSON.parse(fs.readFileSync(path.join(__dirname, 'fundamentals.json'), 'utf8'));
   const codes = FUND.map(s => s.code);
   const { prices: live, fresh } = await fetchAllPrices(codes);
@@ -111,7 +111,7 @@ async function pushFundamentals() {
     const est = p > 0 ? +(s.div / p * 100).toFixed(2) : s.ttm;
     return { code: s.code, name: s.name, price: p, cap: s.cap || '', div: s.div, ttm: s.ttm, nature: s.nature, years: s.years, est: est };
   });
-  const out = { updated: new Date().toISOString(), source: '腾讯+东方财富双源实时行情(兜底自动更新)', prices };
+  const out = { updated: new Date().toISOString(), source: '腾讯实时行情(WorkBuddy自动更新)', prices };
   const b64 = Buffer.from(JSON.stringify(out, null, 2)).toString('base64');
 
   // 4) 推送
