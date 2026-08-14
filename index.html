@@ -119,6 +119,9 @@
   #sec-lib .tbl-scroll{max-height:60vh;min-height:220px;overflow:auto;border-radius:10px;border:1px solid var(--line);}
   #sec-lib thead th{background:#fafcfb;position:sticky;top:0;z-index:2;}
   .row-actions{display:flex;gap:6px;}
+  .note-col{width:100px;min-width:100px;max-width:100px;text-align:center;}
+  .note-input{width:100%;box-sizing:border-box;min-height:32px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;font-size:12.5px;background:#fff;color:var(--txt);}
+  .note-input:focus{outline:none;border-color:var(--primary);background:#fff;}
   .icon-btn{
     width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
     display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
@@ -257,7 +260,7 @@
         <table>
           <thead><tr>
             <th>名称/代码</th><th class="num">股价</th><th class="num">推算%</th>
-            <th class="num">连续分红</th><th class="num">每股分红</th><th class="num">支付率%</th><th></th>
+            <th class="num">连续分红</th><th class="num">每股分红</th><th class="num">支付率%</th><th class="note-col">备注</th><th></th>
           </tr></thead>
           <tbody id="stockBody"></tbody>
         </table>
@@ -1048,6 +1051,14 @@
   window.setFilter=setFilter;
   window.loadSnapshot=loadSnapshot;
   function payoutOf(s){ if(!s||!s.eps||s.eps<=0||!s.div) return null; return s.div / s.eps * 100; }
+  function esc(t){return String(t).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+  window.saveNote=function(code,val){
+    var s=stocks.find(function(x){return x.code===code;});
+    if(!s)return;
+    var v=(val||"").trim();
+    if(v){s.note=v;}else{delete s.note;}
+    save(KEYS.stocks,stocks);
+  };
   function renderLib(){
     var tb=$("stockBody");tb.innerHTML="";
     var list=stocks.slice();
@@ -1077,6 +1088,7 @@
         '<td class="num">'+(s.years||'-')+'</td>'+
         '<td class="num">'+fmt(s.div)+'</td>'+
         '<td class="num">'+(payoutOf(s)!=null?payoutOf(s).toFixed(1):'-')+'</td>'+
+        '<td class="note-col"><input class="note-input" value="'+esc(s.note||'')+'" placeholder="-" onchange="saveNote(\''+s.code+'\',this.value)"></td>'+
         '<td><div class="row-actions">'+
           '<button class="icon-btn del" data-del="'+s.code+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>'+
         '</div></td>';
