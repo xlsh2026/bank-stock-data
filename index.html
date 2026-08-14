@@ -118,6 +118,12 @@
   /* 筛选库：表头固定，表身垂直滚动（首列不固定，恢复横滑） */
   #sec-lib .tbl-scroll{max-height:60vh;min-height:220px;overflow:auto;border-radius:10px;border:1px solid var(--line);}
   #sec-lib thead th{background:#fafcfb;position:sticky;top:0;z-index:2;}
+  /* 筛选库表格：固定列宽，让表头与内容严格对齐 */
+  #sec-lib table{table-layout:fixed;}
+  #sec-lib th,#sec-lib td{vertical-align:middle;padding:8px 4px;}
+  #sec-lib th:first-child,#sec-lib td:first-child{width:30%;padding-left:8px;}
+  #sec-lib th.num,#sec-lib td.num{width:12%;}
+  #sec-lib th:last-child,#sec-lib td:last-child{width:44px;padding-right:8px;text-align:center;}
   .row-actions{display:flex;gap:6px;}
   .icon-btn{
     width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
