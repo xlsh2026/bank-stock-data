@@ -176,7 +176,7 @@
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6"/></svg>
       攒股收息台
     </h1>
-    <div class="sub">筛选 · 持仓收息 · 股息日历 — 数据本地保存，支持自动备份</div>
+    <div class="sub">筛选 · 持仓收息 · 股息日历 — 数据本地保存，支持自动备份与云端加密同步</div>
     <div class="toolbar">
       <button class="btn ghost" id="btnExport">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -397,8 +397,8 @@
     <form id="addStockForm" class="form-grid" onsubmit="return false;">
       <div class="field"><label>代码 *（6 位数字）</label><input id="asCode" inputmode="numeric" maxlength="6" placeholder="如 601398" autocomplete="off"></div>
       <div class="field"><label>名称 *</label><input id="asName" placeholder="如 工商银行" autocomplete="off"></div>
-      <div class="field"><label>参考股价</label><input id="asPrice" inputmode="decimal" placeholder="如 7.52"></div>
-      <div class="field"><label>每股分红</label><input id="asDiv" inputmode="decimal" placeholder="如 0.30"></div>
+      <div class="field"><label>股价 *（自动/手填）</label><input id="asPrice" inputmode="decimal" placeholder="自动拉取失败时请手填"></div>
+      <div class="field"><label>每股分红（自动/手填）</label><input id="asDiv" inputmode="decimal" placeholder="自动补全失败时可手填"></div>
       <div class="field"><label>流通市值</label><input id="asCap" placeholder="如 3061亿" autocomplete="off"></div>
       <div class="field"><label>连续分红年数</label><input id="asYears" inputmode="numeric" placeholder="如 25"></div>
       <div class="field full"><label>企业性质</label>
@@ -433,6 +433,21 @@
         创建方式：GitHub → Settings → Developer settings → Fine-grained tokens，仅授权本仓库 <b>Contents: Read and write</b>。<br>
         令牌只保存在本浏览器，不会上传到任何地方。
       </p>
+    </div>
+    <div class="field full" style="margin:14px 0 6px;border-top:1px dashed var(--line);padding-top:14px;">
+      <label>云端同步 · 持仓加密备份</label>
+      <p style="font-size:12px;color:var(--muted);margin:0 0 8px;line-height:1.6;">
+        用上方令牌把持仓/自选<b>加密</b>后存到你的 GitHub <b>私密 Gist</b>（不在公开列表）。换设备时填同一令牌 + 密码 + 备份ID 即可恢复。
+      </p>
+      <label style="margin-top:6px;">加密密码</label>
+      <input id="setPwd" type="password" placeholder="设置加密密码（恢复时需相同密码）" autocomplete="off">
+      <label style="margin-top:8px;">云端备份 ID（换设备恢复需填入此 ID）</label>
+      <input id="setGistId" type="text" placeholder="首次备份后自动生成" autocomplete="off">
+      <div class="acts" style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn" id="btnCloudBackup">备份持仓到云端</button>
+        <button class="btn ghost" id="btnCloudRestore">从云端恢复</button>
+      </div>
+      <p id="cloudStatus" style="font-size:12px;color:var(--muted);margin:10px 0 0;"></p>
     </div>
     <div class="acts" style="display:flex;gap:10px;margin-top:14px;">
       <button class="btn" id="settingsClear">清除令牌</button>
@@ -1334,20 +1349,101 @@
   }
   function closeAddStock(){$("addStockMask").classList.remove("show");}
 
-  // 浏览器端从东方财富 push2 拉取现价/市值/名称（该接口允许跨域）
+  // 浏览器端多源拉取现价/市值/名称：东财(CORS) → 腾讯(JSONP) → 新浪(JSONP)
   function secidOf(code){
     var c=code.replace(/^(sh|sz)/,'');
     return (/^[69]/.test(c)?'1.':'0.')+c;
   }
-  function fetchQuoteBrowser(code){
+  function marketPrefix(code){
+    var c=code.replace(/^(sh|sz)/,'');
+    return /^[69]/.test(c)?'sh':'sz';
+  }
+  function fetchEastmoneyBrowser(code){
     var sid=secidOf(code);
     var url='https://push2.eastmoney.com/api/qt/stock/get?secid='+sid+'&fields=f43,f57,f58,f116&invt=2&fltt=2';
     return fetch(url,{headers:{'User-Agent':'Mozilla/5.0'}}).then(function(r){return r.json();}).then(function(j){
       var d=j.data||{};
       var price=parseFloat(d.f43)||0;
+      if(!price) throw new Error('eastmoney price empty');
       var cap=d.f116?Math.round(d.f116/1e8)+'亿':'';
       return {price:price, cap:cap, name:d.f58||''};
     });
+  }
+  function fetchTencentBrowser(code){
+    var p=marketPrefix(code)+code;
+    var vn='v_'+p;
+    return new Promise(function(res,rej){
+      var sc=document.createElement('script');
+      sc.src='https://qt.gtimg.cn/q='+p+'&_='+Date.now();
+      sc.charset='GBK';
+      sc.onerror=function(){rej(new Error('tencent load error'));document.head.removeChild(sc);};
+      sc.onload=function(){
+        document.head.removeChild(sc);
+        try{
+          var data=window[vn];
+          if(!data){rej(new Error('tencent no data'));return;}
+          var f=data.split('~');
+          var price=parseFloat(f[3])||0;
+          if(!price){rej(new Error('tencent price empty'));return;}
+          var cap='';
+          if(f[44]){var cv=parseFloat(f[44]); if(cv>1e8) cap=Math.round(cv/1e8)+'亿';}
+          res({price:price, cap:cap, name:f[1]||''});
+        }catch(e){rej(e);}
+      };
+      document.head.appendChild(sc);
+      setTimeout(function(){rej(new Error('tencent timeout'));}, 8000);
+    });
+  }
+  function fetchSinaBrowser(code){
+    var p=marketPrefix(code)+code;
+    var vn='hq_str_'+p;
+    return new Promise(function(res,rej){
+      var sc=document.createElement('script');
+      sc.src='https://hq.sinajs.cn/list='+p+'&_='+Date.now();
+      sc.charset='GBK';
+      sc.onerror=function(){rej(new Error('sina load error'));document.head.removeChild(sc);};
+      sc.onload=function(){
+        document.head.removeChild(sc);
+        try{
+          var data=window[vn];
+          if(!data){rej(new Error('sina no data'));return;}
+          var f=data.split(',');
+          var price=parseFloat(f[3])||0;
+          if(!price){rej(new Error('sina price empty'));return;}
+          res({price:price, cap:'', name:f[0]||''});
+        }catch(e){rej(e);}
+      };
+      document.head.appendChild(sc);
+      setTimeout(function(){rej(new Error('sina timeout'));}, 8000);
+    });
+  }
+  function fetchQuoteBrowser(code){
+    return fetchEastmoneyBrowser(code)
+      .catch(function(){ return fetchTencentBrowser(code); })
+      .catch(function(){ return fetchSinaBrowser(code); });
+  }
+
+  function doAddStock(){
+    var code=(document.getElementById("asCode").value||"").trim();
+    var name=(document.getElementById("asName").value||"").trim();
+    var price=parseFloat(document.getElementById("asPrice").value)||0;
+    var div=parseFloat(document.getElementById("asDiv").value)||0;
+    var cap=(document.getElementById("asCap").value||"").trim();
+    var nature=document.getElementById("asNature").value||"";
+    var yv=parseInt(document.getElementById("asYears").value,10);
+    var years=isNaN(yv)?null:yv;
+    if(price<=0){toast("股价必须大于 0，请手动填写或稍后重试");return false;}
+    var ttm=(price>0&&div>0)?+(div/price*100).toFixed(2):null;
+    var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:ttm,est:ttm};
+    stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
+    toast("已加入本地："+name+(price?"（现价 "+price+"）":""));
+    pushFundamental(s).then(function(ok){
+      if(ok)toast("已同步到自动更新；分红将自动补全 ✅");
+      else toast("已加入本地；点「设置」填令牌可自动同步");
+    }).catch(function(){
+      toast("本地已加入；自动同步失败（可让助手代同步）");
+    });
+    return true;
   }
 
   function submitAddStock(){
@@ -1357,35 +1453,22 @@
     if(!name){toast("请填写名称");return;}
     if(stockByCode(code)){toast("该代码已存在");return;}
     var price=parseFloat(document.getElementById("asPrice").value)||0;
-    var div=parseFloat(document.getElementById("asDiv").value)||0;
-    var cap=(document.getElementById("asCap").value||"").trim();
-    var nature=document.getElementById("asNature").value||"";
-    var yv=parseInt(document.getElementById("asYears").value,10);
-    var years=isNaN(yv)?null:yv;
+    if(price>0){
+      doAddStock(); // 用户已手填股价，直接加入
+      return;
+    }
     toast("正在从行情拉取股价/市值…");
     fetchQuoteBrowser(code).then(function(q){
-      if(q){
-        if(!name && q.name) name=q.name;
-        if(!price && q.price>0) price=q.price;
-        if(!cap && q.cap) cap=q.cap;
+      if(q && q.price>0){
+        if(!name && q.name) document.getElementById("asName").value=q.name;
+        document.getElementById("asPrice").value=q.price;
+        if(!document.getElementById("asCap").value && q.cap) document.getElementById("asCap").value=q.cap;
+        doAddStock();
+      }else{
+        toast("未能获取股价，请手动填写股价后重试");
       }
-      var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
-             est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
-      stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
-      toast("已加入本地："+name+(price?"（现价 "+price+"）":""));
-      pushFundamental(s).then(function(ok){
-        if(ok)toast("已同步到自动更新；分红将自动补全 ✅");
-        else toast("已加入本地；点「设置」填令牌可自动同步");
-      }).catch(function(){
-        toast("本地已加入；自动同步失败（可让助手代同步）");
-      });
     }).catch(function(){
-      // 行情拉取失败也不阻断：用用户手填值
-      var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:null,
-             est:(price>0&&div>0)?+(div/price*100).toFixed(2):null};
-      stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
-      toast("已加入本地："+name);
-      pushFundamental(s);
+      toast("行情拉取失败，请手动填写股价后重试");
     });
   }
 
@@ -1414,6 +1497,8 @@
 
   function openSettings(){
     var t=document.getElementById("setToken");if(t)t.value=getToken();
+    var p=document.getElementById("setPwd");if(p)p.value=getGistPwd();
+    var g=document.getElementById("setGistId");if(g)g.value=getGistId();
     $("settingsMask").classList.add("show");
   }
   function saveSettings(){
@@ -1427,6 +1512,52 @@
     var t=document.getElementById("setToken");if(t)t.value="";
     toast("已清除令牌");$("settingsMask").classList.remove("show");
   }
+
+  // ---------- 云端同步：持仓加密备份到私密 Gist ----------
+  var GIST_ID_KEY=K+"gistid", GIST_PWD_KEY=K+"gistpwd";
+  function getGistId(){try{return localStorage.getItem(GIST_ID_KEY)||"";}catch(e){return "";}}
+  function getGistPwd(){try{return localStorage.getItem(GIST_PWD_KEY)||"";}catch(e){return "";}}
+  function bytesToB64(bytes){var bin="",chunk=0x8000;for(var i=0;i<bytes.length;i+=chunk){bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));}return btoa(bin);}
+  function b64ToBytes(b64){var bin=atob(b64),bytes=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return bytes;}
+  function deriveKey(pass,salt){return crypto.subtle.importKey("raw",new TextEncoder().encode(pass),"PBKDF2",false,["deriveKey"]).then(function(k){return crypto.subtle.deriveKey({name:"PBKDF2",salt:salt,iterations:100000,hash:"SHA-256"},k,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);});}
+  function encryptText(text,pass){var salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));return deriveKey(pass,salt).then(function(key){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},key,new TextEncoder().encode(text));}).then(function(ct){var buf=new Uint8Array(16+12+ct.byteLength);buf.set(salt,0);buf.set(iv,16);buf.set(new Uint8Array(ct),28);return bytesToB64(buf);});}
+  function decryptText(b64,pass){var buf=b64ToBytes(b64),salt=buf.slice(0,16),iv=buf.slice(16,28),ct=buf.slice(28);return deriveKey(pass,salt).then(function(key){return crypto.subtle.decrypt({name:"AES-GCM",iv:iv},key,ct);}).then(function(pt){return new TextDecoder().decode(pt);});}
+  function ghHeaders(token){return {"Authorization":"Bearer "+token,"Accept":"application/vnd.github+json","Content-Type":"application/json","User-Agent":"bankstock-workbench"};}
+  function mergeByCode(arr,add){if(!add)return arr;add.forEach(function(x){var i=arr.findIndex(function(s){return s.code===x.code;});if(i>=0)arr[i]=x;else arr.push(x);});return arr;}
+  function cloudBackup(){
+    var token=getToken();if(!token){toast("请先在上方填写 GitHub 令牌");return;}
+    var pwd=(document.getElementById("setPwd").value||"").trim();if(!pwd){toast("请先设置加密密码");return;}
+    try{localStorage.setItem(GIST_PWD_KEY,pwd);}catch(e){}
+    var payload={_type:"bankstock_cloud",_v:1,exported:new Date().toISOString(),stocks:stocks,holdings:holdings,calendar:calendar};
+    var st=document.getElementById("cloudStatus");if(st)st.textContent="加密并上传中…";
+    encryptText(JSON.stringify(payload),pwd).then(function(ct){
+      var id=getGistId(),url="https://api.github.com/gists",method="POST",body;
+      if(id){url="https://api.github.com/gists/"+id;method="PATCH";body={files:{"bankstock-cloud.json":{content:ct}}};}
+      else{body={description:"攒股收息台 加密云端备份",public:false,files:{"bankstock-cloud.json":{content:ct}}};}
+      return fetch(url,{method:method,headers:ghHeaders(token),body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}).then(function(d){
+        if(d&&d.id){try{localStorage.setItem(GIST_ID_KEY,d.id);}catch(e){}var g=document.getElementById("setGistId");if(g)g.value=d.id;}
+        if(st)st.textContent="已备份 ✅ "+new Date().toLocaleString();toast("已备份持仓到云端 ✅");
+      });
+    }).catch(function(err){if(st)st.textContent="备份失败："+err.message;toast("备份失败："+err.message);});
+  }
+  function cloudRestore(){
+    var token=getToken();if(!token){toast("请先在上方填写 GitHub 令牌");return;}
+    var pwd=(document.getElementById("setPwd").value||"").trim();if(!pwd){toast("请输入加密密码");return;}
+    var id=(document.getElementById("setGistId").value||getGistId()||"").trim();if(!id){toast("缺少云端备份 ID（首次备份后生成，换设备需手动填入）");return;}
+    var st=document.getElementById("cloudStatus");if(st)st.textContent="从云端下载并解密中…";
+    fetch("https://api.github.com/gists/"+id,{headers:ghHeaders(token)}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}).then(function(d){
+      var f=d.files&&d.files["bankstock-cloud.json"];if(!f||!f.content)throw new Error("备份文件为空");
+      return decryptText(f.content,pwd).then(function(pt){var data=JSON.parse(pt);
+        if(data.stocks)stocks=mergeByCode(stocks,data.stocks);
+        if(data.holdings)holdings=mergeByCode(holdings,data.holdings);
+        if(data.calendar)calendar=mergeByCode(calendar,data.calendar);
+        save(KEYS.stocks,stocks);save(KEYS.holdings,holdings);save(KEYS.calendar,calendar);renderAll();
+        if(st)st.textContent="已从云端恢复 ✅ "+new Date().toLocaleString();toast("已从云端恢复 ✅");
+      });
+    }).catch(function(err){if(st)st.textContent="恢复失败："+err.message+"（密码错误或备份ID不对）";toast("恢复失败："+err.message);});
+  }
+  $("btnCloudBackup").onclick=cloudBackup;
+  $("btnCloudRestore").onclick=cloudRestore;
 
   $("btnAdd").onclick=openAddStock;
   $("btnSettings").onclick=openSettings;
