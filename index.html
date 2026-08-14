@@ -243,6 +243,7 @@
           <option value="ttm_desc">股息率(TTM) 高→低</option>
           <option value="name">名称 A→Z</option>
           <option value="price_desc">现价 高→低</option>
+          <option value="payout_desc">支付率 高→低</option>
         </select>
         <span class="toolbar-label">推算股息率</span>
         <div class="seg-group" id="libFilter">
@@ -257,7 +258,7 @@
         <table>
           <thead><tr>
             <th>名称/代码</th><th class="num">股价</th><th class="num">股息率%</th><th class="num">推算%</th>
-            <th class="num">连续分红</th><th class="num">每股分红</th><th>性质</th><th></th>
+            <th class="num">连续分红</th><th class="num">每股分红</th><th class="num">支付率%</th><th></th>
           </tr></thead>
           <tbody id="stockBody"></tbody>
         </table>
@@ -401,18 +402,6 @@
       <div class="field"><label>每股分红（自动/手填）</label><input id="asDiv" inputmode="decimal" placeholder="自动补全失败时可手填"></div>
       <div class="field"><label>流通市值</label><input id="asCap" placeholder="如 3061亿" autocomplete="off"></div>
       <div class="field"><label>连续分红年数</label><input id="asYears" inputmode="numeric" placeholder="如 25"></div>
-      <div class="field full"><label>企业性质</label>
-        <select id="asNature">
-          <option value="">不限</option>
-          <option>国有大型</option>
-          <option>股份制</option>
-          <option>城市商业</option>
-          <option>农村商业</option>
-          <option>民营</option>
-          <option>外资</option>
-          <option>其他</option>
-        </select>
-      </div>
     </form>
     <div class="acts" style="display:flex;gap:10px;margin-top:14px;">
       <button class="btn" id="addStockCancel">取消</button>
@@ -467,523 +456,534 @@
   {
     "code": "600000",
     "name": "浦发银行",
-    "price": 9.18,
-    "div": 0.42,
+    "price": 9.12,
     "cap": "3061亿",
-    "nature": "股份制",
-    "years": 25,
+    "div": 0.42,
     "ttm": 4.58,
-    "est": 4.58
+    "eps": 1.52,
+    "years": 25,
+    "est": 4.61
   },
   {
     "code": "600015",
     "name": "华夏银行",
-    "price": 6.66,
-    "div": 0.42,
+    "price": 6.6,
     "cap": "1031亿",
-    "nature": "股份制",
+    "div": 0.42,
+    "ttm": 6.31,
+    "eps": 1.62,
     "years": 25,
-    "ttm": 6.28,
-    "est": 6.31
+    "est": 6.36
   },
   {
     "code": "600016",
     "name": "民生银行",
-    "price": 3.47,
-    "div": 0.189,
+    "price": 3.43,
     "cap": "1241亿",
-    "nature": "股份制",
+    "div": 0.189,
+    "ttm": 5.45,
+    "eps": 0.63,
     "years": 24,
-    "ttm": 5.4,
-    "est": 5.45
+    "est": 5.51
   },
   {
     "code": "600036",
     "name": "招商银行",
-    "price": 38.77,
-    "div": 2.016,
+    "price": 38.62,
     "cap": "8016亿",
-    "nature": "股份制",
+    "div": 2.016,
+    "ttm": 5.2,
+    "eps": 5.7,
     "years": 24,
-    "ttm": 5.22,
-    "est": 5.2
+    "est": 5.22
   },
   {
     "code": "600919",
     "name": "江苏银行",
-    "price": 11.69,
-    "div": 0.5641,
+    "price": 11.68,
     "cap": "2154亿",
-    "nature": "城商行",
+    "div": 0.5641,
+    "ttm": 4.83,
+    "eps": 1.76,
     "years": 10,
-    "ttm": 4.82,
     "est": 4.83
   },
   {
     "code": "601166",
     "name": "兴业银行",
-    "price": 18.17,
-    "div": 1.066,
+    "price": 18.07,
     "cap": "3841亿",
-    "nature": "股份制",
+    "div": 1.066,
+    "ttm": 5.87,
+    "eps": 3.46,
     "years": 20,
-    "ttm": 5.88,
-    "est": 5.87
+    "est": 5.9
   },
   {
     "code": "601169",
     "name": "北京银行",
-    "price": 4.99,
-    "div": 0.278,
+    "price": 4.98,
     "cap": "1061亿",
-    "nature": "城商行",
+    "div": 0.278,
+    "ttm": 5.57,
+    "eps": 0.78,
     "years": 19,
-    "ttm": 5.55,
-    "est": 5.57
+    "est": 5.58
   },
   {
     "code": "601288",
     "name": "农业银行",
-    "price": 6.56,
-    "div": 0.2495,
+    "price": 6.49,
     "cap": "2.06万亿",
-    "nature": "国有行",
+    "div": 0.2495,
+    "ttm": 3.8,
+    "eps": 0.78,
     "years": 16,
-    "ttm": 3.9,
-    "est": 3.8
+    "est": 3.84
   },
   {
     "code": "601328",
     "name": "交通银行",
-    "price": 6.93,
-    "div": 0.3247,
+    "price": 6.91,
     "cap": "1804亿",
-    "nature": "国有行",
+    "div": 0.3247,
+    "ttm": 4.69,
+    "eps": 1.08,
     "years": 18,
-    "ttm": 4.71,
-    "est": 4.69
+    "est": 4.7
   },
   {
     "code": "601398",
     "name": "工商银行",
-    "price": 7.6,
-    "div": 0.31,
+    "price": 7.59,
     "cap": "2.03万亿",
-    "nature": "国有行",
+    "div": 0.31,
+    "ttm": 4.08,
+    "eps": 1,
     "years": 20,
-    "ttm": 4.12,
     "est": 4.08
   },
   {
     "code": "601658",
     "name": "邮储银行",
-    "price": 4.95,
-    "div": 0.2183,
+    "price": 4.93,
     "cap": "3583亿",
-    "nature": "国有行",
+    "div": 0.2183,
+    "ttm": 4.41,
+    "eps": 0.73,
     "years": 7,
-    "ttm": 4.42,
-    "est": 4.41
+    "est": 4.43
   },
   {
     "code": "601818",
     "name": "光大银行",
-    "price": 3.02,
-    "div": 0.175,
+    "price": 3.01,
     "cap": "1406亿",
-    "nature": "股份制",
-    "years": 16,
+    "div": 0.175,
     "ttm": 5.79,
-    "est": 5.79
+    "eps": 0.58,
+    "years": 16,
+    "est": 5.81
   },
   {
     "code": "601939",
     "name": "建设银行",
-    "price": 10.3,
-    "div": 0.3887,
+    "price": 10.28,
     "cap": "981亿",
-    "nature": "国有行",
+    "div": 0.3887,
+    "ttm": 3.77,
+    "eps": 1.3,
     "years": 20,
-    "ttm": 3.81,
-    "est": 3.77
+    "est": 3.78
   },
   {
     "code": "601988",
     "name": "中国银行",
-    "price": 5.95,
-    "div": 0.2263,
+    "price": 5.91,
     "cap": "1.23万亿",
-    "nature": "国有行",
+    "div": 0.2263,
+    "ttm": 3.8,
+    "eps": 0.74,
     "years": 20,
-    "ttm": 3.89,
-    "est": 3.8
+    "est": 3.83
   },
   {
     "code": "601998",
     "name": "中信银行",
-    "price": 7.69,
-    "div": 0.381,
+    "price": 7.74,
     "cap": "3090亿",
-    "nature": "股份制",
+    "div": 0.381,
+    "ttm": 4.95,
+    "eps": 1.2,
     "years": 10,
-    "ttm": 5.07,
-    "est": 4.95
+    "est": 4.92
   },
   {
     "code": "000001",
     "name": "平安银行",
-    "price": 11.25,
-    "div": 0.596,
+    "price": 11.18,
     "cap": "2187亿",
-    "nature": "股份制",
+    "div": 0.596,
+    "ttm": 5.3,
+    "eps": 2.07,
     "years": 14,
-    "ttm": 5.31,
-    "est": 5.3
+    "est": 5.33
   },
   {
     "code": "002966",
     "name": "苏州银行",
-    "price": 8.44,
-    "div": 0.36,
+    "price": 8.56,
     "cap": "372亿",
-    "nature": "城商行",
+    "div": 0.36,
+    "ttm": 4.27,
+    "eps": 1.14,
     "years": 7,
-    "ttm": 4.33,
-    "est": 4.27
+    "est": 4.21
   },
   {
     "code": "600900",
     "name": "长江电力",
-    "price": 28.24,
-    "div": 1,
+    "price": 28.14,
     "cap": "6873亿",
-    "nature": "水电",
+    "div": 1,
+    "ttm": 3.54,
+    "eps": 1.4101,
     "years": 22,
-    "ttm": 3.56,
-    "est": 3.54
+    "est": 3.55
   },
   {
     "code": "600795",
     "name": "国电电力",
-    "price": 5.07,
-    "div": 0.241,
+    "price": 5.09,
     "cap": "904亿",
-    "nature": "电力",
-    "years": 27,
+    "div": 0.241,
     "ttm": 4.75,
-    "est": 4.75
+    "eps": 0.402,
+    "years": 27,
+    "est": 4.73
   },
   {
     "code": "600377",
     "name": "宁沪高速",
     "price": 12.01,
-    "div": 0.49,
     "cap": "605亿",
-    "nature": "高速",
-    "years": 25,
+    "div": 0.49,
     "ttm": 4.08,
+    "eps": 0.9119,
+    "years": 25,
     "est": 4.08
   },
   {
     "code": "600028",
     "name": "中国石化",
-    "price": 4.99,
-    "div": 0.2,
+    "price": 5.02,
     "cap": "6034亿",
-    "nature": "石化",
-    "years": 24,
+    "div": 0.2,
     "ttm": 4.01,
-    "est": 4.01
+    "eps": 0.262,
+    "years": 24,
+    "est": 3.98
   },
   {
     "code": "600025",
     "name": "华能水电",
-    "price": 9.71,
-    "div": 0.2,
+    "price": 9.64,
     "cap": "1809亿",
-    "nature": "水电",
-    "years": 8,
+    "div": 0.2,
     "ttm": 2.06,
-    "est": 2.06
+    "eps": 0.45,
+    "years": 8,
+    "est": 2.07
   },
   {
     "code": "000429",
     "name": "粤高速A",
-    "price": 13.23,
-    "div": 0.52,
+    "price": 13.24,
     "cap": "277亿",
-    "nature": "高速",
-    "years": 28,
-    "ttm": 3.93,
-    "est": 3.93
-  }
-];
-  var LATEST_SNAPSHOT=[
-  {
-    "code": "600000",
-    "name": "浦发银行",
-    "price": 9.18,
-    "div": 0.42,
-    "cap": "3061亿",
-    "nature": "股份制",
-    "years": 25,
-    "ttm": 4.58,
-    "est": 4.58
-  },
-  {
-    "code": "600015",
-    "name": "华夏银行",
-    "price": 6.66,
-    "div": 0.42,
-    "cap": "1031亿",
-    "nature": "股份制",
-    "years": 25,
-    "ttm": 6.28,
-    "est": 6.31
-  },
-  {
-    "code": "600016",
-    "name": "民生银行",
-    "price": 3.47,
-    "div": 0.189,
-    "cap": "1241亿",
-    "nature": "股份制",
-    "years": 24,
-    "ttm": 5.4,
-    "est": 5.45
-  },
-  {
-    "code": "600036",
-    "name": "招商银行",
-    "price": 38.77,
-    "div": 2.016,
-    "cap": "8016亿",
-    "nature": "股份制",
-    "years": 24,
-    "ttm": 5.22,
-    "est": 5.2
-  },
-  {
-    "code": "600919",
-    "name": "江苏银行",
-    "price": 11.69,
-    "div": 0.5641,
-    "cap": "2154亿",
-    "nature": "城商行",
-    "years": 10,
-    "ttm": 4.82,
-    "est": 4.83
-  },
-  {
-    "code": "601166",
-    "name": "兴业银行",
-    "price": 18.17,
-    "div": 1.066,
-    "cap": "3841亿",
-    "nature": "股份制",
-    "years": 20,
-    "ttm": 5.88,
-    "est": 5.87
-  },
-  {
-    "code": "601169",
-    "name": "北京银行",
-    "price": 4.99,
-    "div": 0.278,
-    "cap": "1061亿",
-    "nature": "城商行",
-    "years": 19,
-    "ttm": 5.55,
-    "est": 5.57
-  },
-  {
-    "code": "601288",
-    "name": "农业银行",
-    "price": 6.56,
-    "div": 0.2495,
-    "cap": "2.06万亿",
-    "nature": "国有行",
-    "years": 16,
-    "ttm": 3.9,
-    "est": 3.8
-  },
-  {
-    "code": "601328",
-    "name": "交通银行",
-    "price": 6.93,
-    "div": 0.3247,
-    "cap": "1804亿",
-    "nature": "国有行",
-    "years": 18,
-    "ttm": 4.71,
-    "est": 4.69
-  },
-  {
-    "code": "601398",
-    "name": "工商银行",
-    "price": 7.6,
-    "div": 0.31,
-    "cap": "2.03万亿",
-    "nature": "国有行",
-    "years": 20,
-    "ttm": 4.12,
-    "est": 4.08
-  },
-  {
-    "code": "601658",
-    "name": "邮储银行",
-    "price": 4.95,
-    "div": 0.2183,
-    "cap": "3583亿",
-    "nature": "国有行",
-    "years": 7,
-    "ttm": 4.42,
-    "est": 4.41
-  },
-  {
-    "code": "601818",
-    "name": "光大银行",
-    "price": 3.02,
-    "div": 0.175,
-    "cap": "1406亿",
-    "nature": "股份制",
-    "years": 16,
-    "ttm": 5.79,
-    "est": 5.79
-  },
-  {
-    "code": "601939",
-    "name": "建设银行",
-    "price": 10.3,
-    "div": 0.3887,
-    "cap": "981亿",
-    "nature": "国有行",
-    "years": 20,
-    "ttm": 3.81,
-    "est": 3.77
-  },
-  {
-    "code": "601988",
-    "name": "中国银行",
-    "price": 5.95,
-    "div": 0.2263,
-    "cap": "1.23万亿",
-    "nature": "国有行",
-    "years": 20,
-    "ttm": 3.89,
-    "est": 3.8
-  },
-  {
-    "code": "601998",
-    "name": "中信银行",
-    "price": 7.69,
-    "div": 0.381,
-    "cap": "3090亿",
-    "nature": "股份制",
-    "years": 10,
-    "ttm": 5.07,
-    "est": 4.95
-  },
-  {
-    "code": "000001",
-    "name": "平安银行",
-    "price": 11.25,
-    "div": 0.596,
-    "cap": "2187亿",
-    "nature": "股份制",
-    "years": 14,
-    "ttm": 5.31,
-    "est": 5.3
-  },
-  {
-    "code": "002966",
-    "name": "苏州银行",
-    "price": 8.44,
-    "div": 0.36,
-    "cap": "372亿",
-    "nature": "城商行",
-    "years": 7,
-    "ttm": 4.33,
-    "est": 4.27
-  },
-  {
-    "code": "600900",
-    "name": "长江电力",
-    "price": 28.24,
-    "div": 1,
-    "cap": "6873亿",
-    "nature": "水电",
-    "years": 22,
-    "ttm": 3.56,
-    "est": 3.54
-  },
-  {
-    "code": "600795",
-    "name": "国电电力",
-    "price": 5.07,
-    "div": 0.241,
-    "cap": "904亿",
-    "nature": "电力",
-    "years": 27,
-    "ttm": 4.75,
-    "est": 4.75
-  },
-  {
-    "code": "600377",
-    "name": "宁沪高速",
-    "price": 12.01,
-    "div": 0.49,
-    "cap": "605亿",
-    "nature": "高速",
-    "years": 25,
-    "ttm": 4.08,
-    "est": 4.08
-  },
-  {
-    "code": "600028",
-    "name": "中国石化",
-    "price": 4.99,
-    "div": 0.2,
-    "cap": "6034亿",
-    "nature": "石化",
-    "years": 24,
-    "ttm": 4.01,
-    "est": 4.01
-  },
-  {
-    "code": "600025",
-    "name": "华能水电",
-    "price": 9.71,
-    "div": 0.2,
-    "cap": "1809亿",
-    "nature": "水电",
-    "years": 8,
-    "ttm": 2.06,
-    "est": 2.06
-  },
-  {
-    "code": "000429",
-    "name": "粤高速A",
-    "price": 13.23,
     "div": 0.52,
-    "cap": "277亿",
-    "nature": "高速",
-    "years": 28,
     "ttm": 3.93,
+    "eps": 0.86,
+    "years": 28,
     "est": 3.93
   },
   {
     "code": "000651",
     "name": "格力电器",
-    "price": 40.04,
-    "div": 2,
+    "price": 40.07,
     "cap": "2243亿",
-    "nature": "白色家电",
-    "years": 25,
+    "div": 2,
     "ttm": 5,
-    "est": 5
+    "eps": 5.2,
+    "years": 25,
+    "est": 4.99
   }
-];
+]
+  var LATEST_SNAPSHOT=[
+  {
+    "code": "600000",
+    "name": "浦发银行",
+    "price": 9.12,
+    "cap": "3061亿",
+    "div": 0.42,
+    "ttm": 4.58,
+    "eps": 1.52,
+    "years": 25,
+    "est": 4.61
+  },
+  {
+    "code": "600015",
+    "name": "华夏银行",
+    "price": 6.6,
+    "cap": "1031亿",
+    "div": 0.42,
+    "ttm": 6.31,
+    "eps": 1.62,
+    "years": 25,
+    "est": 6.36
+  },
+  {
+    "code": "600016",
+    "name": "民生银行",
+    "price": 3.43,
+    "cap": "1241亿",
+    "div": 0.189,
+    "ttm": 5.45,
+    "eps": 0.63,
+    "years": 24,
+    "est": 5.51
+  },
+  {
+    "code": "600036",
+    "name": "招商银行",
+    "price": 38.62,
+    "cap": "8016亿",
+    "div": 2.016,
+    "ttm": 5.2,
+    "eps": 5.7,
+    "years": 24,
+    "est": 5.22
+  },
+  {
+    "code": "600919",
+    "name": "江苏银行",
+    "price": 11.68,
+    "cap": "2154亿",
+    "div": 0.5641,
+    "ttm": 4.83,
+    "eps": 1.76,
+    "years": 10,
+    "est": 4.83
+  },
+  {
+    "code": "601166",
+    "name": "兴业银行",
+    "price": 18.07,
+    "cap": "3841亿",
+    "div": 1.066,
+    "ttm": 5.87,
+    "eps": 3.46,
+    "years": 20,
+    "est": 5.9
+  },
+  {
+    "code": "601169",
+    "name": "北京银行",
+    "price": 4.98,
+    "cap": "1061亿",
+    "div": 0.278,
+    "ttm": 5.57,
+    "eps": 0.78,
+    "years": 19,
+    "est": 5.58
+  },
+  {
+    "code": "601288",
+    "name": "农业银行",
+    "price": 6.49,
+    "cap": "2.06万亿",
+    "div": 0.2495,
+    "ttm": 3.8,
+    "eps": 0.78,
+    "years": 16,
+    "est": 3.84
+  },
+  {
+    "code": "601328",
+    "name": "交通银行",
+    "price": 6.91,
+    "cap": "1804亿",
+    "div": 0.3247,
+    "ttm": 4.69,
+    "eps": 1.08,
+    "years": 18,
+    "est": 4.7
+  },
+  {
+    "code": "601398",
+    "name": "工商银行",
+    "price": 7.59,
+    "cap": "2.03万亿",
+    "div": 0.31,
+    "ttm": 4.08,
+    "eps": 1,
+    "years": 20,
+    "est": 4.08
+  },
+  {
+    "code": "601658",
+    "name": "邮储银行",
+    "price": 4.93,
+    "cap": "3583亿",
+    "div": 0.2183,
+    "ttm": 4.41,
+    "eps": 0.73,
+    "years": 7,
+    "est": 4.43
+  },
+  {
+    "code": "601818",
+    "name": "光大银行",
+    "price": 3.01,
+    "cap": "1406亿",
+    "div": 0.175,
+    "ttm": 5.79,
+    "eps": 0.58,
+    "years": 16,
+    "est": 5.81
+  },
+  {
+    "code": "601939",
+    "name": "建设银行",
+    "price": 10.28,
+    "cap": "981亿",
+    "div": 0.3887,
+    "ttm": 3.77,
+    "eps": 1.3,
+    "years": 20,
+    "est": 3.78
+  },
+  {
+    "code": "601988",
+    "name": "中国银行",
+    "price": 5.91,
+    "cap": "1.23万亿",
+    "div": 0.2263,
+    "ttm": 3.8,
+    "eps": 0.74,
+    "years": 20,
+    "est": 3.83
+  },
+  {
+    "code": "601998",
+    "name": "中信银行",
+    "price": 7.74,
+    "cap": "3090亿",
+    "div": 0.381,
+    "ttm": 4.95,
+    "eps": 1.2,
+    "years": 10,
+    "est": 4.92
+  },
+  {
+    "code": "000001",
+    "name": "平安银行",
+    "price": 11.18,
+    "cap": "2187亿",
+    "div": 0.596,
+    "ttm": 5.3,
+    "eps": 2.07,
+    "years": 14,
+    "est": 5.33
+  },
+  {
+    "code": "002966",
+    "name": "苏州银行",
+    "price": 8.56,
+    "cap": "372亿",
+    "div": 0.36,
+    "ttm": 4.27,
+    "eps": 1.14,
+    "years": 7,
+    "est": 4.21
+  },
+  {
+    "code": "600900",
+    "name": "长江电力",
+    "price": 28.14,
+    "cap": "6873亿",
+    "div": 1,
+    "ttm": 3.54,
+    "eps": 1.4101,
+    "years": 22,
+    "est": 3.55
+  },
+  {
+    "code": "600795",
+    "name": "国电电力",
+    "price": 5.09,
+    "cap": "904亿",
+    "div": 0.241,
+    "ttm": 4.75,
+    "eps": 0.402,
+    "years": 27,
+    "est": 4.73
+  },
+  {
+    "code": "600377",
+    "name": "宁沪高速",
+    "price": 12.01,
+    "cap": "605亿",
+    "div": 0.49,
+    "ttm": 4.08,
+    "eps": 0.9119,
+    "years": 25,
+    "est": 4.08
+  },
+  {
+    "code": "600028",
+    "name": "中国石化",
+    "price": 5.02,
+    "cap": "6034亿",
+    "div": 0.2,
+    "ttm": 4.01,
+    "eps": 0.262,
+    "years": 24,
+    "est": 3.98
+  },
+  {
+    "code": "600025",
+    "name": "华能水电",
+    "price": 9.64,
+    "cap": "1809亿",
+    "div": 0.2,
+    "ttm": 2.06,
+    "eps": 0.45,
+    "years": 8,
+    "est": 2.07
+  },
+  {
+    "code": "000429",
+    "name": "粤高速A",
+    "price": 13.24,
+    "cap": "277亿",
+    "div": 0.52,
+    "ttm": 3.93,
+    "eps": 0.86,
+    "years": 28,
+    "est": 3.93
+  },
+  {
+    "code": "000651",
+    "name": "格力电器",
+    "price": 40.07,
+    "cap": "2243亿",
+    "div": 2,
+    "ttm": 5,
+    "eps": 5.2,
+    "years": 25,
+    "est": 4.99
+  }
+]
   var SAMPLE_HOLDINGS=[
     {code:"601398",shares:5000,cost:5.80},
     {code:"601288",shares:8000,cost:3.90},
@@ -1074,7 +1074,7 @@
         var t=stocks.find(function(x){return x.code===p.code;});
         if(!t){t={code:p.code,name:p.name};stocks.push(t);}
         t.name=p.name; t.price=p.price; t.cap=p.cap; t.div=p.div; t.ttm=p.ttm;
-        t.nature=p.nature; t.years=p.years;
+        t.eps=p.eps; t.years=p.years;
         if(t.price>0&&t.div) t.est=+(t.div/t.price*100).toFixed(2);
         else if(p.est!=null) t.est=p.est;
         pushHistory(t.code,t.price); n++;
@@ -1096,6 +1096,7 @@
   }
   window.setFilter=setFilter;
   window.loadSnapshot=loadSnapshot;
+  function payoutOf(s){ if(!s||!s.eps||s.eps<=0||!s.div) return null; return s.div / s.eps * 100; }
   function renderLib(){
     var tb=$("stockBody");tb.innerHTML="";
     var list=stocks.slice();
@@ -1103,6 +1104,7 @@
     if(sk==="ttm_desc")list.sort(function(a,b){return (b.ttm||0)-(a.ttm||0);});
     else if(sk==="name")list.sort(function(a,b){return a.name.localeCompare(b.name,"zh");});
     else if(sk==="price_desc")list.sort(function(a,b){return (b.price||0)-(a.price||0);});
+    else if(sk==="payout_desc")list.sort(function(a,b){return (payoutOf(b)||0)-(payoutOf(a)||0);});
     else list.sort(function(a,b){return (b.est||0)-(a.est||0);});
     // 推算股息率筛选（读取按钮组当前激活项）
     var activeBtn=document.querySelector('#libFilter .seg.active');
@@ -1125,7 +1127,7 @@
         '<td class="num pos">'+(s.est!=null?fmt(s.est):'-')+'</td>'+
         '<td class="num">'+(s.years||'-')+'</td>'+
         '<td class="num">'+fmt(s.div)+'</td>'+
-        '<td>'+s.nature+'</td>'+
+        '<td class="num">'+(payoutOf(s)!=null?payoutOf(s).toFixed(1):'-')+'</td>'+
         '<td><div class="row-actions">'+
           '<button class="icon-btn del" data-del="'+s.code+'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>'+
         '</div></td>';
@@ -1452,12 +1454,11 @@
     var price=parseFloat(document.getElementById("asPrice").value)||0;
     var div=parseFloat(document.getElementById("asDiv").value)||0;
     var cap=(document.getElementById("asCap").value||"").trim();
-    var nature=document.getElementById("asNature").value||"";
     var yv=parseInt(document.getElementById("asYears").value,10);
     var years=isNaN(yv)?null:yv;
     if(price<=0){toast("股价必须大于 0，请手动填写或稍后重试");return false;}
     var ttm=(price>0&&div>0)?+(div/price*100).toFixed(2):null;
-    var s={code:code,name:name,price:price,div:div,cap:cap,nature:nature,years:years,ttm:ttm,est:ttm};
+    var s={code:code,name:name,price:price,div:div,cap:cap,years:years,ttm:ttm,est:ttm};
     stocks.push(s);save(KEYS.stocks,stocks);renderAll();closeAddStock();
     toast("已加入本地："+name+(price?"（现价 "+price+"）":""));
     pushFundamental(s).then(function(ok){
@@ -1506,7 +1507,7 @@
     }).then(function(d){
       var arr=JSON.parse(b64dec(d.content));
       var idx=-1;for(var i=0;i<arr.length;i++){if(arr[i].code===stock.code){idx=i;break;}}
-      var entry={code:stock.code,name:stock.name,price:stock.price||0,cap:stock.cap||"",div:stock.div||0,ttm:null,nature:stock.nature||"",years:stock.years||null};
+      var entry={code:stock.code,name:stock.name,price:stock.price||0,cap:stock.cap||"",div:stock.div||0,ttm:null,years:stock.years||null};
       if(idx>=0)arr[idx]=entry;else arr.push(entry);
       return fetch(api,{method:"PUT",headers:hd,body:JSON.stringify({
         message:"feat: 新增股票 "+stock.code+" "+stock.name,
@@ -1627,7 +1628,7 @@
       if(p.cap!=null&&p.cap!=="")s.cap=p.cap;
       if(p.div!=null)s.div=p.div;
       if(p.ttm!=null)s.ttm=p.ttm;
-      if(p.nature!=null&&p.nature!=="")s.nature=p.nature;
+      if(p.eps!=null)s.eps=p.eps;
       if(p.years!=null)s.years=p.years;
       if(s.price>0&&s.div>0)s.est=+(s.div/s.price*100).toFixed(2);
       pushHistory(s.code,s.price);
