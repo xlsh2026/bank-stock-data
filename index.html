@@ -240,7 +240,6 @@
         <span class="toolbar-label">排序</span>
         <select id="libSort" onchange="renderLib()">
           <option value="est_desc">推算股息率 高→低</option>
-          <option value="ttm_desc">股息率(TTM) 高→低</option>
           <option value="name">名称 A→Z</option>
           <option value="price_desc">现价 高→低</option>
           <option value="payout_desc">支付率 高→低</option>
@@ -257,7 +256,7 @@
       <div class="tbl-scroll">
         <table>
           <thead><tr>
-            <th>名称/代码</th><th class="num">股价</th><th class="num">股息率%</th><th class="num">推算%</th>
+            <th>名称/代码</th><th class="num">股价</th><th class="num">推算%</th>
             <th class="num">连续分红</th><th class="num">每股分红</th><th class="num">支付率%</th><th></th>
           </tr></thead>
           <tbody id="stockBody"></tbody>
@@ -1101,8 +1100,7 @@
     var tb=$("stockBody");tb.innerHTML="";
     var list=stocks.slice();
     var sk=document.getElementById("libSort")?document.getElementById("libSort").value:"est_desc";
-    if(sk==="ttm_desc")list.sort(function(a,b){return (b.ttm||0)-(a.ttm||0);});
-    else if(sk==="name")list.sort(function(a,b){return a.name.localeCompare(b.name,"zh");});
+    if(sk==="name")list.sort(function(a,b){return a.name.localeCompare(b.name,"zh");});
     else if(sk==="price_desc")list.sort(function(a,b){return (b.price||0)-(a.price||0);});
     else if(sk==="payout_desc")list.sort(function(a,b){return (payoutOf(b)||0)-(payoutOf(a)||0);});
     else list.sort(function(a,b){return (b.est||0)-(a.est||0);});
@@ -1123,7 +1121,6 @@
       var tr=document.createElement("tr");
       tr.innerHTML='<td><b><span class="stk-name" onclick="openChart(\''+s.code+'\')">'+s.name+'</span></b><br><span class="pill">'+s.code+'</span></td>'+
         '<td class="num">'+fmt(s.price)+'</td>'+
-        '<td class="num pos">'+(s.ttm!=null?fmt(s.ttm):'-')+'</td>'+
         '<td class="num pos">'+(s.est!=null?fmt(s.est):'-')+'</td>'+
         '<td class="num">'+(s.years||'-')+'</td>'+
         '<td class="num">'+fmt(s.div)+'</td>'+
