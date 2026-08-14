@@ -1058,6 +1058,7 @@
     var v=(val||"").trim();
     if(v){s.note=v;}else{delete s.note;}
     save(KEYS.stocks,stocks);
+    scheduleCloudSync();
   };
   function renderLib(){
     var tb=$("stockBody");tb.innerHTML="";
@@ -1541,6 +1542,37 @@
       });
     }).catch(function(err){if(st)st.textContent="恢复失败："+err.message+"（密码错误或备份ID不对）";toast("恢复失败："+err.message);});
   }
+  // 备注跨设备自动同步：改动后静默推送到私密 Gist；启动/定时从 Gist 拉取备注
+  var _cloudSyncTimer=null;
+  function scheduleCloudSync(){
+    if(!getToken()||!getGistPwd())return; // 未配置令牌/密码则不同步
+    if(_cloudSyncTimer)clearTimeout(_cloudSyncTimer);
+    _cloudSyncTimer=setTimeout(pushCloudSilent,1200);
+  }
+  function pushCloudSilent(){
+    var token=getToken(),pwd=getGistPwd();if(!token||!pwd)return;
+    var payload={_type:"bankstock_cloud",_v:1,exported:new Date().toISOString(),stocks:stocks,holdings:holdings,calendar:calendar};
+    encryptText(JSON.stringify(payload),pwd).then(function(ct){
+      var id=getGistId(),url="https://api.github.com/gists",method="POST",body;
+      if(id){url="https://api.github.com/gists/"+id;method="PATCH";body={files:{"bankstock-cloud.json":{content:ct}}};}
+      else{body={description:"攒股收息台 加密云端备份",public:false,files:{"bankstock-cloud.json":{content:ct}}};}
+      return fetch(url,{method:method,headers:ghHeaders(token),body:JSON.stringify(body)}).then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json();}).then(function(d){
+        if(d&&d.id){try{localStorage.setItem(GIST_ID_KEY,d.id);}catch(e){}var g=document.getElementById("setGistId");if(g&&!g.value)g.value=d.id;}
+      });
+    }).catch(function(err){console.warn("云端备注同步失败",err);});
+  }
+  function autoPullNotes(){
+    var token=getToken(),pwd=getGistPwd(),id=getGistId();if(!token||!pwd||!id)return;
+    fetch("https://api.github.com/gists/"+id,{headers:ghHeaders(token)}).then(function(r){if(!r.ok)return;return r.json();}).then(function(d){
+      var f=d.files&&d.files["bankstock-cloud.json"];if(!f||!f.content)return;
+      return decryptText(f.content,pwd);
+    }).then(function(pt){
+      if(!pt)return;var data=JSON.parse(pt);if(!data.stocks)return;
+      var changed=false;
+      data.stocks.forEach(function(rs){var s=stocks.find(function(x){return x.code===rs.code;});if(s&&rs.note!==undefined&&s.note!==rs.note){s.note=rs.note;changed=true;}});
+      if(changed){save(KEYS.stocks,stocks);renderLib();toast("已从云端同步备注");}
+    }).catch(function(){});
+  }
   $("btnCloudBackup").onclick=cloudBackup;
   $("btnCloudRestore").onclick=cloudRestore;
 
@@ -1614,6 +1646,9 @@
   }
   autoSync();
   setInterval(autoSync,5*60*1000);
+  // 备注跨设备同步：启动即拉取一次，之后每 2 分钟再拉一次
+  autoPullNotes();
+  setInterval(autoPullNotes,2*60*1000);
 
   // ---------- 股价走势图（内联 SVG，纯前端积累）----------
   function loadChart(){try{return JSON.parse(localStorage.getItem(KEYS.chart))||{};}catch(e){return {};}}
