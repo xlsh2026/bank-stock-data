@@ -43,7 +43,7 @@ function inTrading() {
   if (wd === 0 || wd === 6) return false;
   const mins = d.getHours() * 60 + d.getMinutes();
   const morning = mins >= 540 && mins <= 690;  // 09:00-11:30
-  const afternoon = mins >= 780 && mins <= 900; // 13:00-15:00
+  const afternoon = mins >= 780 && mins <= 930; // 13:00-15:30（含15:00-15:30收盘缓冲，确保收盘价落地）
   return morning || afternoon;
 }
 
