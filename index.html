@@ -124,6 +124,10 @@
   #sec-lib th:first-child,#sec-lib td:first-child{width:30%;padding-left:8px;}
   #sec-lib th.num,#sec-lib td.num{width:12%;}
   #sec-lib th:last-child,#sec-lib td:last-child{width:44px;padding-right:8px;text-align:center;}
+  #sec-lib .live-badge{margin-left:auto;font-size:12px;font-weight:600;padding:3px 9px;border-radius:11px;white-space:nowrap;}
+  #sec-lib .live-badge.on{color:#0e8f7a;background:rgba(30,160,140,.13);}
+  #sec-lib .live-badge.wait{color:#b8860b;background:rgba(184,134,11,.13);}
+  #sec-lib .live-badge.off{color:#7c8a86;background:#f0f3f2;}
   .row-actions{display:flex;gap:6px;}
   .icon-btn{
     width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
@@ -258,6 +262,7 @@
           <button type="button" class="seg" data-val="e5" onclick="setFilter('e5')">&lt;5%</button>
         </div>
         <button type="button" class="btn btn-ghost" id="btnSnap" onclick="loadSnapshot()">📥 载入最新底表</button>
+        <span id="liveBadge" class="live-badge off">○ 实时价 加载中…</span>
       </div>
       <div class="tbl-scroll">
         <table>
@@ -1082,15 +1087,20 @@
     var list=stocks.slice();
     var sk=document.getElementById("libSort")?document.getElementById("libSort").value:"est_desc";
     if(sk==="name")list.sort(function(a,b){return a.name.localeCompare(b.name,"zh");});
-    else if(sk==="price_desc")list.sort(function(a,b){return (b.price||0)-(a.price||0);});
+    else if(sk==="price_desc")list.sort(function(a,b){return (curPrice(b)||0)-(curPrice(a)||0);});
     else if(sk==="payout_desc")list.sort(function(a,b){return (payoutOf(b)||0)-(payoutOf(a)||0);});
-    else list.sort(function(a,b){return (b.est||0)-(a.est||0);});
+    else list.sort(function(a,b){
+      var ea=(curPrice(a)>0&&a.div>0)?a.div/curPrice(a)*100:(a.est||0);
+      var eb=(curPrice(b)>0&&b.div>0)?b.div/curPrice(b)*100:(b.est||0);
+      return eb-ea;
+    });
     // 推算股息率筛选（读取按钮组当前激活项）
     var activeBtn=document.querySelector('#libFilter .seg.active');
     var fk=activeBtn?activeBtn.getAttribute('data-val'):'all';
     if(fk!=="all"){
       list=list.filter(function(s){
-        var e=s.est==null?-1:s.est;
+        var lp=curPrice(s);
+        var e=(lp>0&&s.div>0)?+(s.div/lp*100).toFixed(2):(s.est==null?-1:s.est);
         if(fk==="e6")return e>=6;
         if(fk==="e5_6")return e>=5&&e<6;
         if(fk==="e5")return e<5;
@@ -1099,10 +1109,12 @@
     }
     $("libCount").textContent=list.length;
     list.forEach(function(s){
+      var lp=curPrice(s);
+      var e=(lp>0&&s.div>0)?+(s.div/lp*100).toFixed(2):(s.est!=null?s.est:null);
       var tr=document.createElement("tr");
       tr.innerHTML='<td><b><span class="stk-name" onclick="openChart(\''+s.code+'\')">'+s.name+'</span></b><br><span class="pill">'+s.code+'</span></td>'+
-        '<td class="num">'+fmt(s.price)+'</td>'+
-        '<td class="num pos">'+(s.est!=null?fmt(s.est):'-')+'</td>'+
+        '<td class="num">'+(livePrices[s.code]?'<b>':'')+fmt(lp)+(livePrices[s.code]?'</b>':'')+'</td>'+
+        '<td class="num pos">'+(e!=null?fmt(e):'-')+'</td>'+
         '<td class="num">'+(s.years||'-')+'</td>'+
         '<td class="num">'+fmt(s.div)+'</td>'+
         '<td class="num">'+(payoutOf(s)!=null?payoutOf(s).toFixed(1):'-')+'</td>'+
@@ -1132,10 +1144,11 @@
   function computeHold(){
     return holdings.map(function(h){
       var s=stockByCode(h.code);if(!s)return null;
-      var value=s.price*h.shares;
+      var cp=curPrice(s);
+      var value=cp*h.shares;
       var annual=s.div*h.shares;
-      var yld=s.price>0?(s.div/s.price*100):0;
-      var profit=h.cost?(s.price-h.cost)*h.shares:null;
+      var yld=cp>0?(s.div/cp*100):0;
+      var profit=h.cost?(cp-h.cost)*h.shares:null;
       return {code:h.code,name:s.name,shares:h.shares,value:value,annual:annual,yld:yld,profit:profit};
     }).filter(Boolean);
   }
@@ -1585,6 +1598,51 @@
     $("hint30").style.display=total>=30?"flex":"none";
   }
 
+  // ---------- 浏览器端实时拉价（腾讯行情，独立于 WorkBuddy / GitHub）----------
+  // 页面直接拉腾讯实时行情覆盖展示价格；GitHub prices.json 仅作离线快照兜底。
+  var livePrices={};   // code -> {price, cap}
+  var liveTs=0;        // 最近一次实时拉取成功时间
+  function curPrice(s){var lp=livePrices[s.code]; return (lp&&lp.price>0)?lp.price:(s.price||0);}
+  function inTradingCN(){
+    var d=new Date(), wd=d.getDay(); if(wd===0||wd===6)return false;
+    var m=d.getHours()*60+d.getMinutes();
+    return (m>=540&&m<=690)||(m>=780&&m<=930);
+  }
+  function updateLiveBadge(){
+    var el=document.getElementById('liveBadge'); if(!el)return;
+    if(liveTs>0){ var d=new Date(liveTs);
+      el.className='live-badge on';
+      el.textContent='● 实时价 '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);
+    } else if(inTradingCN()){ el.className='live-badge wait'; el.textContent='○ 实时价 加载中…'; }
+    else { el.className='live-badge off'; el.textContent='○ 实时价 收盘快照'; }
+  }
+  function refreshLivePrices(){
+    if(!stocks||!stocks.length){updateLiveBadge();return;}
+    if(!inTradingCN()){updateLiveBadge();return;} // 非交易时段价格不变，展示快照即可
+    var q=stocks.map(function(s){return marketPrefix(s.code)+s.code;}).join(',');
+    var sc=document.createElement('script');
+    sc.src='https://qt.gtimg.cn/q='+q+'&_='+Date.now();
+    sc.charset='GBK';
+    var done=false;
+    function clean(){try{document.head.removeChild(sc);}catch(e){}}
+    sc.onerror=function(){if(done)return;done=true;clean();updateLiveBadge();};
+    sc.onload=function(){
+      if(done)return;done=true;clean();
+      var got=0;
+      stocks.forEach(function(s){
+        var vn='v_'+marketPrefix(s.code)+s.code;
+        try{ var d=window[vn]; if(!d)return;
+          var f=d.split('~'); var p=parseFloat(f[3]); if(!p)return;
+          livePrices[s.code]={price:p, cap:(f[44]?Math.round(parseFloat(f[44])/1e8)+'亿':'')}; got++;
+        }catch(e){}
+      });
+      if(got>0){liveTs=Date.now(); renderLib(); renderHold();}
+      updateLiveBadge();
+    };
+    document.head.appendChild(sc);
+    setTimeout(function(){if(!done){done=true;clean();updateLiveBadge();}}, 9000);
+  }
+
   // ---------- 总渲染 ----------
   function renderAll(){renderToday();renderLib();renderHold();renderCal();checkHint();}
   renderAll();
@@ -1639,6 +1697,9 @@
   }
   autoSync();
   setInterval(autoSync,5*60*1000);
+  // 浏览器端实时拉价：交易时段每 30 秒刷新，独立于 WorkBuddy / GitHub，关闭应用也能看实时价
+  refreshLivePrices();
+  setInterval(refreshLivePrices,30000);
 
   // ---------- 股价走势图（内联 SVG，纯前端积累）----------
   function loadChart(){try{return JSON.parse(localStorage.getItem(KEYS.chart))||{};}catch(e){return {};}}
@@ -1656,7 +1717,7 @@
   function renderChart(code){
     var s=stockByCode(code);if(!s)return;
     var c=loadChart(),pts=(c[code]||[]).slice();
-    if(pts.length===0&&s.price>0)pts=[{t:Date.now(),p:s.price}];
+    if(pts.length===0&&curPrice(s)>0)pts=[{t:Date.now(),p:curPrice(s)}];
     var box=$("chartBox");
     var W=480,H=240,padL=10,padR=10,padT=20,padB=28;
     var iw=W-padL-padR,ih=H-padT-padB;
@@ -1692,7 +1753,9 @@
     }
     svg+='</svg>';
     html+=svg;
-    html+='<div class="chart-meta">'+pts.length+' 个采样点 · 当前价 '+fmt(s.price)+' · 推算 '+fmt(s.est)+'%</div>';
+    var cp=curPrice(s);
+    var ce=(cp>0&&s.div>0)?+(s.div/cp*100).toFixed(2):s.est;
+    html+='<div class="chart-meta">'+pts.length+' 个采样点 · 当前价 '+fmt(cp)+' · 推算 '+(ce!=null?fmt(ce):0)+'%</div>';
     html+='<button class="btn" type="button" onclick="closeChart()" style="margin-top:12px;width:100%">关闭</button>';
     box.innerHTML=html;
     $("chartMask").classList.add("show");
