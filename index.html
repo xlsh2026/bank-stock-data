@@ -1602,7 +1602,7 @@
   // 页面直接拉腾讯实时行情覆盖展示价格；GitHub prices.json 仅作离线快照兜底。
   var livePrices={};   // code -> {price, cap}
   var liveTs=0;        // 最近一次实时拉取成功时间
-  function curPrice(s){var lp=livePrices[s.code]; return (lp&&lp.price>0)?lp.price:(s.price||0);}
+  function curPrice(s){var lp=livePrices[s.code]; return (lp&&lp.price>0&&inTradingCN())?lp.price:(s.price||0);}
   function inTradingCN(){
     var d=new Date(), wd=d.getDay(); if(wd===0||wd===6)return false;
     var m=d.getHours()*60+d.getMinutes();
@@ -1616,9 +1616,13 @@
     } else if(inTradingCN()){ el.className='live-badge wait'; el.textContent='○ 实时价 加载中…'; }
     else { el.className='live-badge off'; el.textContent='○ 实时价 收盘快照'; }
   }
+  var liveCloseFetched=false; // 收盘后只需拉一次收盘价，避免反复请求
   function refreshLivePrices(){
     if(!stocks||!stocks.length){updateLiveBadge();return;}
-    if(!inTradingCN()){updateLiveBadge();return;} // 非交易时段价格不变，展示快照即可
+    if(!inTradingCN()){
+      // 收盘后价格已锁定为收盘价，只需拉一次即可，避免空耗请求
+      if(liveCloseFetched){updateLiveBadge();return;}
+    }
     var q=stocks.map(function(s){return marketPrefix(s.code)+s.code;}).join(',');
     var sc=document.createElement('script');
     sc.src='https://qt.gtimg.cn/q='+q+'&_='+Date.now();
@@ -1636,7 +1640,7 @@
           livePrices[s.code]={price:p, cap:(f[44]?Math.round(parseFloat(f[44])/1e8)+'亿':'')}; got++;
         }catch(e){}
       });
-      if(got>0){liveTs=Date.now(); renderLib(); renderHold();}
+      if(got>0){liveTs=Date.now(); if(!inTradingCN())liveCloseFetched=true; renderLib(); renderHold();}
       updateLiveBadge();
     };
     document.head.appendChild(sc);
