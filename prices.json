@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-21T03:39:31.631Z",
+  "updated": "2026-08-21T03:46:30.624Z",
   "source": "腾讯+东方财富双源实时行情",
   "prices": [
     {
@@ -247,30 +247,30 @@
       "name": "宁波银行",
       "price": 34.08,
       "cap": "2247亿",
-      "div": 0,
-      "eps": null,
-      "years": null,
-      "est": 0
+      "div": 1.2,
+      "eps": 4.29,
+      "years": 5,
+      "est": 3.52
     },
     {
       "code": "601009",
       "name": "南京银行",
       "price": 11.77,
       "cap": "1456亿",
-      "div": 0,
-      "eps": null,
-      "years": null,
-      "est": 0
+      "div": 0.5292,
+      "eps": 1.76,
+      "years": 5,
+      "est": 4.5
     },
     {
       "code": "600926",
       "name": "杭州银行",
       "price": 16.67,
       "cap": "1209亿",
-      "div": 0,
-      "eps": null,
-      "years": null,
-      "est": 0
+      "div": 0.66,
+      "eps": 2.66,
+      "years": 5,
+      "est": 3.96
     }
   ]
 }
