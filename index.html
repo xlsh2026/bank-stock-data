@@ -128,6 +128,12 @@
   #sec-lib .live-badge.on{color:#0e8f7a;background:rgba(30,160,140,.13);}
   #sec-lib .live-badge.wait{color:#b8860b;background:rgba(184,134,11,.13);}
   #sec-lib .live-badge.off{color:#7c8a86;background:#f0f3f2;}
+  #sec-lib th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;}
+  #sec-lib th.sortable:hover{background:#f0f7f6;}
+  #sec-lib th .sort-arrow{display:inline-block;width:0;margin-left:3px;color:var(--primary);font-size:11px;visibility:hidden;}
+  #sec-lib th.sort-asc .sort-arrow,#sec-lib th.sort-desc .sort-arrow{visibility:visible;width:auto;}
+  #sec-lib th.sort-asc .sort-arrow:after{content:"↑";}
+  #sec-lib th.sort-desc .sort-arrow:after{content:"↓";}
   .row-actions{display:flex;gap:6px;}
   .icon-btn{
     width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;
@@ -250,9 +256,17 @@
         <span class="toolbar-label">排序</span>
         <select id="libSort" onchange="renderLib()">
           <option value="est_desc">推算股息率 高→低</option>
-          <option value="name">名称 A→Z</option>
+          <option value="est_asc">推算股息率 低→高</option>
+          <option value="name_asc">名称 A→Z</option>
+          <option value="name_desc">名称 Z→A</option>
           <option value="price_desc">现价 高→低</option>
+          <option value="price_asc">现价 低→高</option>
           <option value="payout_desc">支付率 高→低</option>
+          <option value="payout_asc">支付率 低→高</option>
+          <option value="years_desc">连续分红 高→低</option>
+          <option value="years_asc">连续分红 低→高</option>
+          <option value="div_desc">每股分红 高→低</option>
+          <option value="div_asc">每股分红 低→高</option>
         </select>
         <span class="toolbar-label">推算股息率</span>
         <div class="seg-group" id="libFilter">
@@ -267,8 +281,13 @@
       <div class="tbl-scroll">
         <table>
           <thead><tr>
-            <th>名称/代码</th><th class="num">股价</th><th class="num">推算%</th>
-            <th class="num">连续分红</th><th class="num">每股分红</th><th class="num">支付率%</th><th></th>
+            <th class="sortable" data-sort="name" onclick="toggleSort('name')">名称/代码<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-sort="price" onclick="toggleSort('price')">股价<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-sort="est" onclick="toggleSort('est')">推算%<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-sort="years" onclick="toggleSort('years')">连续分红<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-sort="div" onclick="toggleSort('div')">每股分红<span class="sort-arrow"></span></th>
+            <th class="num sortable" data-sort="payout" onclick="toggleSort('payout')">支付率%<span class="sort-arrow"></span></th>
+            <th></th>
           </tr></thead>
           <tbody id="stockBody"></tbody>
         </table>
@@ -1138,17 +1157,50 @@
   window.loadSnapshot=loadSnapshot;
   function payoutOf(s){ if(!s||!s.eps||s.eps<=0||!s.div) return null; return s.div / s.eps * 100; }
   function esc(t){return String(t).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
+  function parseSort(){
+    var sk=document.getElementById("libSort")?document.getElementById("libSort").value:"est_desc";
+    var p=sk.indexOf("_");
+    if(p<0)return {field:"est",dir:"desc"};
+    return {field:sk.slice(0,p),dir:sk.slice(p+1)==="asc"?"asc":"desc"};
+  }
+  function defaultDir(field){return field==="name"?"asc":"desc";}
+  function toggleSort(field){
+    var cur=parseSort();
+    var dir=defaultDir(field);
+    if(cur.field===field)dir=cur.dir==="asc"?"desc":"asc";
+    var sel=document.getElementById("libSort");
+    if(sel)sel.value=field+"_"+dir;
+    renderLib();
+  }
+  window.toggleSort=toggleSort;
   function renderLib(){
     var tb=$("stockBody");tb.innerHTML="";
     var list=stocks.slice();
-    var sk=document.getElementById("libSort")?document.getElementById("libSort").value:"est_desc";
-    if(sk==="name")list.sort(function(a,b){return a.name.localeCompare(b.name,"zh");});
-    else if(sk==="price_desc")list.sort(function(a,b){return (curPrice(b)||0)-(curPrice(a)||0);});
-    else if(sk==="payout_desc")list.sort(function(a,b){return (payoutOf(b)||0)-(payoutOf(a)||0);});
-    else list.sort(function(a,b){
-      var ea=(curPrice(a)>0&&a.div>0)?a.div/curPrice(a)*100:(a.est||0);
-      var eb=(curPrice(b)>0&&b.div>0)?b.div/curPrice(b)*100:(b.est||0);
-      return eb-ea;
+    var sort=parseSort();
+    list.sort(function(a,b){
+      var dir=sort.dir==="asc"?1:-1;
+      var va,vb;
+      switch(sort.field){
+        case "name":
+          va=a.name||""; vb=b.name||"";
+          return sort.dir==="asc"?va.localeCompare(vb,"zh"):vb.localeCompare(va,"zh");
+        case "price": va=curPrice(a)||0; vb=curPrice(b)||0; break;
+        case "est":
+          va=(curPrice(a)>0&&a.div>0)?a.div/curPrice(a)*100:(a.est||0);
+          vb=(curPrice(b)>0&&b.div>0)?b.div/curPrice(b)*100:(b.est||0);
+          break;
+        case "years": va=a.years||0; vb=b.years||0; break;
+        case "div": va=a.div||0; vb=b.div||0; break;
+        case "payout": va=payoutOf(a)||0; vb=payoutOf(b)||0; break;
+        default: return 0;
+      }
+      return (va-vb)*dir;
+    });
+    document.querySelectorAll("#sec-lib thead th.sortable").forEach(function(th){
+      th.classList.remove("sort-asc","sort-desc");
+      if(th.getAttribute("data-sort")===sort.field){
+        th.classList.add(sort.dir==="asc"?"sort-asc":"sort-desc");
+      }
     });
     // 推算股息率筛选（读取按钮组当前激活项）
     var activeBtn=document.querySelector('#libFilter .seg.active');
