@@ -253,21 +253,6 @@
         筛选库（<span id="libCount">0</span>）
       </h3>
       <div class="toolbar">
-        <span class="toolbar-label">排序</span>
-        <select id="libSort" onchange="renderLib()">
-          <option value="est_desc">推算股息率 高→低</option>
-          <option value="est_asc">推算股息率 低→高</option>
-          <option value="name_asc">名称 A→Z</option>
-          <option value="name_desc">名称 Z→A</option>
-          <option value="price_desc">现价 高→低</option>
-          <option value="price_asc">现价 低→高</option>
-          <option value="payout_desc">支付率 高→低</option>
-          <option value="payout_asc">支付率 低→高</option>
-          <option value="years_desc">连续分红 高→低</option>
-          <option value="years_asc">连续分红 低→高</option>
-          <option value="div_desc">每股分红 高→低</option>
-          <option value="div_asc">每股分红 低→高</option>
-        </select>
         <span class="toolbar-label">推算股息率</span>
         <div class="seg-group" id="libFilter">
           <button type="button" class="seg active" data-val="all" onclick="setFilter('all')">全部</button>
@@ -1039,6 +1024,7 @@
   var stocks=load(KEYS.stocks,null);
   var holdings=load(KEYS.holdings,null);
   var calendar=load(KEYS.calendar,null);
+  var libSortState="est_desc"; // 表头排序状态：field_dir
   if(stocks===null&&holdings===null&&calendar===null&&!localStorage.getItem(KEYS.seeded)){
     stocks=SAMPLE_STOCKS.slice();holdings=SAMPLE_HOLDINGS.slice();calendar=SAMPLE_CALENDAR.slice();
     save(KEYS.stocks,stocks);save(KEYS.holdings,holdings);save(KEYS.calendar,calendar);
@@ -1158,7 +1144,7 @@
   function payoutOf(s){ if(!s||!s.eps||s.eps<=0||!s.div) return null; return s.div / s.eps * 100; }
   function esc(t){return String(t).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});}
   function parseSort(){
-    var sk=document.getElementById("libSort")?document.getElementById("libSort").value:"est_desc";
+    var sk=libSortState||"est_desc";
     var p=sk.indexOf("_");
     if(p<0)return {field:"est",dir:"desc"};
     return {field:sk.slice(0,p),dir:sk.slice(p+1)==="asc"?"asc":"desc"};
@@ -1168,8 +1154,7 @@
     var cur=parseSort();
     var dir=defaultDir(field);
     if(cur.field===field)dir=cur.dir==="asc"?"desc":"asc";
-    var sel=document.getElementById("libSort");
-    if(sel)sel.value=field+"_"+dir;
+    libSortState=field+"_"+dir;
     renderLib();
   }
   window.toggleSort=toggleSort;
