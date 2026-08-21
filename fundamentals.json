@@ -220,26 +220,26 @@
     "name": "宁波银行",
     "price": 34.02,
     "cap": "2247亿",
-    "div": 0,
-    "years": null,
-    "eps": null
+    "div": 1.2,
+    "years": 5,
+    "eps": 4.29
   },
   {
     "code": "601009",
     "name": "南京银行",
     "price": 11.78,
     "cap": "1456亿",
-    "div": 0,
-    "years": null,
-    "eps": null
+    "div": 0.5292,
+    "years": 5,
+    "eps": 1.76
   },
   {
     "code": "600926",
     "name": "杭州银行",
     "price": 16.68,
     "cap": "1209亿",
-    "div": 0,
-    "years": null,
-    "eps": null
+    "div": 0.66,
+    "years": 5,
+    "eps": 2.66
   }
 ]
