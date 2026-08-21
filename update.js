@@ -1,6 +1,7 @@
 // 银行股股价准实时更新脚本（运行于 GitHub Actions，每 15 分钟一次）
-// 只拉取「现价」，其余基本面（每股分红/连续分红年数/企业性质/TTM股息率）来自 fundamentals.json（已提交，不常变）
+// 只拉取「现价」，其余基本面（每股分红/连续分红年数/每股收益）来自 fundamentals.json（已提交，不常变）
 // 拉取失败时回退到上一次 prices.json 或 fundamentals.json 的兜底值，保证 prices.json 永远不为空
+// 注意：输出 schema 必须含 eps（支付率% 依赖它），且不得复活已废弃的 ttm/nature 字段
 
 const https = require('https');
 const fs = require('fs');
@@ -28,10 +29,10 @@ prev.forEach(p => { prevMap[p.code] = p; });
   const prices = FUND.map(s => {
     const p = (live[s.code] != null) ? live[s.code] : (prevMap[s.code] ? prevMap[s.code].price : s.price);
     const cap = prevMap[s.code] ? (prevMap[s.code].cap || '') : (s.cap || '');
-    const est = p > 0 ? +(s.div / p * 100).toFixed(2) : s.ttm;
+    const est = p > 0 ? +(s.div / p * 100).toFixed(2) : (s.est || null);
     return {
       code: s.code, name: s.name, price: p, cap: cap,
-      div: s.div, ttm: s.ttm, nature: s.nature, years: s.years, est: est
+      div: s.div, eps: s.eps, years: s.years, est: est
     };
   });
   const out = {
